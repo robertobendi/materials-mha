@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "resource_type": {
+      "id": "dataset",
+      "title": {
+        "en": "Dataset"
+      }
+    },
+    "title": "Defect-Tolerant Carrier Injection In MoS2 Enabled By Recessed Metal Contacts",
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Tan, Weiling",
+          "given_name": "Weiling",
+          "family_name": "Tan"
+        },
+        "affiliations": [
+          {
+            "name": "1. Institute for Advanced Intelligence and Computing, Singapore"
+          }
+        ]
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Ito, Kenta",
+          "given_name": "Kenta",
+          "family_name": "Ito"
+        },
+        "affiliations": [
+          {
+            "name": "Department of Materials Science and Engineering, National University of Singapore, Singapore 117575, Republic of Singapore"
+          }
+        ]
+      }
+    ],
+    "description": "<p>We investigate carrier injection through metal contacts to monolayer MoS2 in the presence of sulfur vacancies, using density-functional theory combined with nonequilibrium Green's-function transport calculations. We compare conventional top contacts with recessed contact geometries and show that the recessed geometry maintains efficient carrier injection even at defect densities where top contacts fail. The dataset contains the relaxed contact structures, the computed transmission spectra, and the projected local density of states for every defect configuration studied in the accompanying paper.</p>",
+    "subjects": [
+      {
+        "subject": "MoS2"
+      },
+      {
+        "subject": "Schottky barrier"
+      }
+    ],
+    "funding": []
+  },
+  "custom_fields": {
+    "mc_references": [
+      {
+        "ref_resource_type": "publication-article",
+        "ref_citation": "Not submitted yet"
+      }
+    ]
+  },
+  "pids": {
+    "doi": {
+      "identifier": "10.24435/materialscloud:d2-c2",
+      "provider": "datacite"
+    },
+    "mcid": {
+      "identifier": "2026.141",
+      "provider": "mcid"
+    }
+  },
+  "files": {
+    "enabled": true,
+    "count": 4,
+    "entries": {
+      "contact_top_pristine.vasp": {
+        "size": 25580,
+        "mimetype": "application/octet-stream",
+        "ext": "vasp"
+      },
+      "contact_recessed_pristine.vasp": {
+        "size": 25476,
+        "mimetype": "application/octet-stream",
+        "ext": "vasp"
+      },
+      "transmission_spectra.dat": {
+        "size": 8123400,
+        "mimetype": "text/plain",
+        "ext": "dat"
+      },
+      "pldos_all_configs.h5": {
+        "size": 412009344,
+        "mimetype": "application/x-hdf5",
+        "ext": "h5"
+      }
+    }
+  }
+}

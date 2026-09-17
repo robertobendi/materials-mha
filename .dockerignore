@@ -1,0 +1,12 @@
+.git
+.gitignore
+__pycache__
+**/__pycache__
+*.pyc
+.env
+runs
+review.md
+tests
+backend
+DEMO.md
+Open Review.command

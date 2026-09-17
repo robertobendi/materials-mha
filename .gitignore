@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+backend/state.json
+runs/
+review.md
+.DS_Store

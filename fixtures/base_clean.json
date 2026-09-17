@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "resource_type": {"id": "dataset", "title": {"en": "Dataset"}},
+    "title": "Machine-learned interatomic potentials for lithium argyrodites from first principles",
+    "creators": [
+      {"person_or_org": {"type": "personal", "name": "Rossi, Marta", "given_name": "Marta", "family_name": "Rossi"},
+       "affiliations": [{"id": "02s376052", "name": "École Polytechnique Fédérale de Lausanne"}]},
+      {"person_or_org": {"type": "personal", "name": "Keller, Jonas", "given_name": "Jonas", "family_name": "Keller"},
+       "affiliations": [{"name": "Institute of Condensed Matter Physics, ETH Zurich, CH-8093 Zurich, Switzerland"}]}
+    ],
+    "description": "<p>We train a machine-learned interatomic potential for the lithium argyrodite family of solid electrolytes on a database of density-functional theory calculations. The potential reproduces ab initio molecular dynamics diffusivities to within ten percent while running four orders of magnitude faster, allowing nanosecond trajectories on supercells of several thousand atoms. We use it to map the dependence of the lithium conductivity on halide ordering, and we identify a previously unreported ordering motif that suppresses ionic transport. The dataset contains the training structures, the fitted potential, and the molecular dynamics trajectories used in the analysis.</p>",
+    "subjects": [{"subject": "solid electrolytes"}, {"subject": "machine learning"}, {"subject": "molecular dynamics"}, {"subject": "MARVEL"}],
+    "funding": [{"funder": {"id": "00vvxbe27", "name": "NCCR MARVEL"}, "award": {"acronym": "MARVEL/DD3", "number": "dd3"}}]
+  },
+  "custom_fields": {
+    "mc_references": [
+      {"ref_resource_type": "publication-article",
+       "ref_citation": "M. Rossi, J. Keller, Suppression of lithium transport by halide ordering in argyrodites, Physical Review Materials 10, 015401 (2026), 10.1103/PhysRevMaterials.10.015401"}
+    ]
+  },
+  "pids": {"doi": {"identifier": "10.24435/materialscloud:aa-bb", "provider": "datacite"}},
+  "files": {"enabled": true, "count": 3, "entries": {
+    "README.md": {"size": 4102, "mimetype": "text/markdown", "ext": "md"},
+    "training_set.tar.gz": {"size": 812340000, "mimetype": "application/gzip", "ext": "gz"},
+    "trajectories.h5": {"size": 2140000000, "mimetype": "application/x-hdf5", "ext": "h5"}
+  }}
+}

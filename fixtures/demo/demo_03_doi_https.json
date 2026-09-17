@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "resource_type": {
+      "id": "dataset",
+      "title": {
+        "en": "Dataset"
+      }
+    },
+    "title": "Anharmonic phonon transport in halide perovskites from stochastic self-consistent theory",
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Moreau, Camille",
+          "given_name": "Camille",
+          "family_name": "Moreau"
+        },
+        "affiliations": [
+          {
+            "id": "02s376052",
+            "name": "École Polytechnique Fédérale de Lausanne"
+          }
+        ]
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Bianchi, Andrea",
+          "given_name": "Andrea",
+          "family_name": "Bianchi"
+        },
+        "affiliations": [
+          {
+            "name": "Dipartimento di Fisica, Università degli Studi di Milano, via Celoria 16, 20133 Milano, Italy"
+          }
+        ]
+      }
+    ],
+    "description": "<p>We compute the lattice thermal conductivity of the halide perovskites CsPbBr3 and CsPbI3 including anharmonicity to all orders through the stochastic self-consistent harmonic approximation. The phonon spectral functions show strong overdamping of the low-frequency modes near the cubic-to-tetragonal transition, and the computed conductivities agree with experiment to within fifteen percent between 300 and 600 K. The dataset contains the displacement ensembles, the effective force constants, the spectral functions, and the input files needed to reproduce every figure of the accompanying paper.</p>",
+    "subjects": [
+      {
+        "subject": "halide perovskites"
+      },
+      {
+        "subject": "thermal conductivity"
+      },
+      {
+        "subject": "anharmonicity"
+      },
+      {
+        "subject": "phonons"
+      }
+    ],
+    "funding": [
+      {
+        "funder": {
+          "id": "00vvxbe27",
+          "name": "NCCR MARVEL"
+        },
+        "award": {
+          "acronym": "MARVEL/P1",
+          "number": "p1"
+        }
+      }
+    ]
+  },
+  "custom_fields": {
+    "mc_references": [
+      {
+        "ref_resource_type": "publication-article",
+        "ref_citation": "C. Moreau, A. Bianchi, Overdamped phonons and glass-like heat transport in caesium lead halides, Physical Review B 113, 094306 (2026), https://doi.org/10.1103/PhysRevB.113.094306"
+      }
+    ]
+  },
+  "pids": {
+    "doi": {
+      "identifier": "10.24435/materialscloud:d3-c3",
+      "provider": "datacite"
+    },
+    "mcid": {
+      "identifier": "2026.142",
+      "provider": "mcid"
+    }
+  },
+  "files": {
+    "enabled": true,
+    "count": 4,
+    "entries": {
+      "README.md": {
+        "size": 3980,
+        "mimetype": "text/markdown",
+        "ext": "md"
+      },
+      "displacement_ensembles.tar.gz": {
+        "size": 1922330011,
+        "mimetype": "application/gzip",
+        "ext": "gz"
+      },
+      "force_constants.h5": {
+        "size": 240118222,
+        "mimetype": "application/x-hdf5",
+        "ext": "h5"
+      },
+      "spectral_functions.zip": {
+        "size": 88011245,
+        "mimetype": "application/zip",
+        "ext": "zip"
+      }
+    }
+  }
+}

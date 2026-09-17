@@ -1,0 +1,99 @@
+{
+  "metadata": {
+    "resource_type": {
+      "id": "dataset",
+      "title": {
+        "en": "Dataset"
+      }
+    },
+    "title": "Ab initio database of adsorption energies on transition-metal surfaces",
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Raman, Deepak",
+          "given_name": "Deepak",
+          "family_name": "Raman"
+        },
+        "affiliations": [
+          {
+            "name": "Department of Chemical Engineering, Meridian Institute of Technology, Chennai 600036, India"
+          }
+        ]
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Okafor, Chidi",
+          "given_name": "Chidi",
+          "family_name": "Okafor"
+        },
+        "affiliations": [
+          {
+            "name": "Centre for Computational Chemistry, Meridian Institute of Technology, Chennai 600036, India"
+          }
+        ]
+      }
+    ],
+    "description": "<p>We present a database of adsorption energies for 24 small molecules and reaction intermediates on the low-index facets of 18 transition metals, computed with density-functional theory at consistent numerical settings. The database covers 8,640 adsorption geometries including all symmetry-distinct sites, and we benchmark three exchange-correlation functionals against available experimental data. The dataset contains every relaxed geometry, the total energies and electronic structure outputs of all calculations, and scripts to query the database.</p>",
+    "subjects": [
+      {
+        "subject": "adsorption"
+      },
+      {
+        "subject": "catalysis"
+      },
+      {
+        "subject": "density-functional theory"
+      },
+      {
+        "subject": "database"
+      }
+    ],
+    "funding": []
+  },
+  "custom_fields": {
+    "mc_references": [
+      {
+        "ref_resource_type": "publication-article",
+        "ref_citation": "D. Raman, C. Okafor, A consistent ab initio database of adsorption on transition-metal surfaces, ACS Catalysis 16, 4411 (2026), 10.1021/acscatal.6c00821"
+      }
+    ]
+  },
+  "pids": {
+    "doi": {
+      "identifier": "10.24435/materialscloud:d5-c5",
+      "provider": "datacite"
+    },
+    "mcid": {
+      "identifier": "2026.144",
+      "provider": "mcid"
+    }
+  },
+  "files": {
+    "enabled": true,
+    "count": 4,
+    "entries": {
+      "README.md": {
+        "size": 6120,
+        "mimetype": "text/markdown",
+        "ext": "md"
+      },
+      "dft_calculations.tar.gz": {
+        "size": 29000000000,
+        "mimetype": "application/gzip",
+        "ext": "gz"
+      },
+      "relaxed_structures.tar.gz": {
+        "size": 5200000000,
+        "mimetype": "application/gzip",
+        "ext": "gz"
+      },
+      "query_scripts.zip": {
+        "size": 140233,
+        "mimetype": "application/zip",
+        "ext": "zip"
+      }
+    }
+  }
+}

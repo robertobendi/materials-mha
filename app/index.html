@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Materials Cloud Moderation Desk</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Materials Cloud moderation dashboard">
+      <svg class="brand-mark" viewBox="0 0 36 36" aria-hidden="true"><path d="M18 3 31 10.5v15L18 33 5 25.5v-15Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="4.5" fill="currentColor"/><path d="m8 12 6.2 3.6M28 12l-6.2 3.6M18 7v6.5M8 24l6.2-3.6M28 24l-6.2-3.6M18 29v-6.5" stroke="currentColor" stroke-width="1.6"/></svg>
+      <span>Materials <b>Cloud</b></span><span class="desk-label">MODERATION</span>
+    </a>
+    <nav class="primary-nav" aria-label="Workspace">
+      <button class="nav-item active" data-view="dashboard" aria-current="page">Dashboard</button>
+      <button class="nav-item" data-view="review">Review</button>
+      <button class="nav-item" data-view="history">History</button>
+      <button class="nav-item" data-view="playbook">Playbook</button>
+    </nav>
+    <div class="top-actions">
+      <span class="safety-pill"><span class="status-dot"></span><span id="mode-label">Comments only</span></span>
+      <button id="account-toggle" class="avatar-button" aria-label="Open workspace settings" title="Workspace settings" aria-expanded="false" aria-controls="account-panel"><span id="avatar">MC</span><span id="account-name">Account</span></button>
+    </div>
+  </header>
+
+  <div id="mock-banner" class="mock-banner" hidden>LOCAL MOCK DATA &mdash; production is not being used.</div>
+  <section id="account-panel" class="account-panel" hidden aria-label="Workspace settings">
+    <div class="panel-heading"><div><span class="eyebrow">Archive access</span><h2 id="account-title">Moderator account</h2></div><button id="account-close" class="icon-button" aria-label="Close">&times;</button></div>
+    <p>The ignored local token stays in server memory and is never returned to this page or sent to the AI reviewer.</p>
+    <div class="security-note"><span aria-hidden="true">&#10003;</span><div><b>Comments-only production access</b><br><span>Record data is read-only. Reply sending needs a preview, typed request ID, explicit acknowledgment, and a fresh timeline check. Accept, decline, edit, and publish remain unavailable.</span></div></div>
+    <form id="account-form"><label for="token">Replace token for this browser session</label><div class="token-row"><input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="Paste a personal access token"><button id="save-token" type="submit">Use token</button></div></form>
+    <section class="ai-settings" aria-labelledby="ai-settings-title">
+      <div class="section-title"><div><span class="eyebrow">AI provider</span><h3 id="ai-settings-title">AI provider</h3></div><span id="ai-settings-badge" class="ai-action neutral">Not configured</span></div>
+      <p>Paste an OpenRouter, DeepSeek, or OpenAI-compatible API key to enable the contextual scope and description checks. OpenRouter automatically uses a free model. The key stays only in server memory.</p>
+      <form id="ai-settings-form">
+        <div class="settings-grid">
+          <label for="ai-provider-select">Provider<select id="ai-provider-select" autocomplete="off"><option value="openrouter">OpenRouter &mdash; free models</option><option value="deepseek">DeepSeek</option><option value="openai">OpenAI</option><option value="custom">Other OpenAI-compatible</option></select></label>
+          <label for="ai-api-key">API key<input id="ai-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your API key"></label>
+          <label for="ai-model">Model<input id="ai-model" autocomplete="off" spellcheck="false" placeholder="Auto"></label>
+          <label class="full-field" for="ai-endpoint" id="ai-endpoint-field" hidden>API base URL<input id="ai-endpoint" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://your-host/v1"></label>
+        </div>
+        <div class="settings-actions"><button id="save-ai-settings" type="submit">Save AI connection</button><button id="clear-ai-settings" class="text-button" type="button" hidden>Forget API settings</button></div>
+        <p id="ai-settings-status" class="helper" role="status">Not configured.</p>
+      </form>
+    </section>
+    <div class="account-footer"><span id="account-status" role="status">Checking access...</span><button id="disconnect" class="text-button" type="button" hidden>Forget session token</button></div>
+  </section>
+
+  <main>
+    <div id="notice" class="notice" role="alert" hidden></div>
+
+    <section id="dashboard-view" class="view">
+      <div class="page-intro compact-intro">
+        <div><p class="eyebrow">Moderation overview</p><h1>Hello, <span id="hello-name">moderator</span>.</h1><p>Prioritize new submissions and author replies, then open one in the focused review page.</p></div>
+        <div class="intro-actions"><span id="refreshed-at">Not refreshed yet</span><button id="refresh" class="secondary-button"><span aria-hidden="true">&#8635;</span> Refresh</button></div>
+      </div>
+      <section class="stats-grid" aria-label="Queue summary">
+        <button class="stat-card selected" data-filter="all"><span class="stat-icon blue">&#9638;</span><span><b id="stat-open">&mdash;</b><small>Things to review</small></span></button>
+        <button class="stat-card" data-filter="new"><span class="stat-icon red">&#9679;</span><span><b id="stat-new">&mdash;</b><small>New records</small></span></button>
+        <button class="stat-card" data-filter="replied"><span class="stat-icon green">&#8617;</span><span><b id="stat-replies">&mdash;</b><small>New replies</small></span></button>
+        <button class="stat-card" data-filter="waiting"><span class="stat-icon amber">&#9719;</span><span><b id="stat-waiting">&mdash;</b><small>Waiting on authors</small></span></button>
+      </section>
+      <section class="queue-card" aria-label="Submission queue">
+        <div class="queue-heading"><div><span class="eyebrow">Live queue</span><h2>Review queue <span id="queue-count">Loading...</span></h2></div><label class="search-box"><span aria-hidden="true">&#9906;</span><input id="queue-search" type="search" placeholder="Search title or ID" aria-label="Search queue"></label></div>
+        <div class="queue-columns" aria-hidden="true"><span>Request</span><span>Conversation</span><span>Updated</span><span></span></div>
+        <div id="queue-loading" class="queue-loading"><span class="spinner"></span>Reading requests and conversations...</div>
+        <div id="queue-empty" class="queue-empty" hidden><b>No matching requests</b><span>Try another filter or refresh the queue.</span></div>
+        <div id="queue-list" class="queue-list"></div>
+      </section>
+    </section>
+
+    <section id="review-view" class="view" hidden>
+      <div class="review-toolbar"><button id="back-dashboard" class="text-button">&larr; Dashboard</button><div><span class="eyebrow">Focused workspace</span><b id="review-toolbar-title">Submission review</b></div><span class="advisory-pill">AI suggests &middot; you decide</span></div>
+      <article class="detail-panel" aria-live="polite">
+        <div id="detail-empty" class="detail-empty"><div class="empty-illustration">&#10003;</div><h2>No submission selected</h2><p>Choose a record from the Dashboard queue or History to open its review workspace.</p><button id="empty-dashboard" class="secondary-button">Go to Dashboard</button></div>
+        <div id="detail-loading" class="detail-empty" hidden><span class="spinner large"></span><h2>Opening submission</h2><p>Reading the latest draft metadata, files, and conversation...</p></div>
+        <div id="detail" hidden>
+          <header class="record-header">
+            <div class="record-topline"><div class="badge-row"><span id="record-bucket" class="badge"></span><span id="record-status" class="badge neutral"></span><code id="record-id"></code></div><a id="archive-link" class="external-link" target="_blank" rel="noopener noreferrer">Open in Archive &nearr;</a></div>
+            <h1 id="record-title"></h1><div id="record-authors" class="record-authors"></div>
+            <div class="recommendation"><span id="recommendation-icon"></span><div><b id="recommendation-title"></b><p id="recommendation-copy"></p></div></div>
+          </header>
+          <div class="detail-tabs" role="tablist" aria-label="Submission details">
+            <button role="tab" class="detail-tab active" data-detail-tab="review" aria-selected="true">Review <span id="finding-count" class="tab-count">0</span></button>
+            <button role="tab" class="detail-tab" data-detail-tab="record" aria-selected="false">Record</button>
+            <button role="tab" class="detail-tab" data-detail-tab="conversation" aria-selected="false">Conversation <span id="comment-count" class="tab-count">0</span></button>
+            <button role="tab" class="detail-tab" data-detail-tab="reply" aria-selected="false">Reply</button>
+          </div>
+
+          <section id="review-tab" class="tab-panel">
+            <div class="review-layout">
+              <div class="review-main">
+                <section id="ai-card" class="ai-card">
+                  <div class="section-title"><div><span class="eyebrow">AI advisory</span><h2>Suggested final action</h2></div><span id="ai-action" class="ai-action neutral">Waiting</span></div>
+                  <p class="ai-disclosure">Runs automatically for new records and author replies. It receives only title, description, keywords, references, funders, filenames, and rule findings &mdash; never your Archive token or the conversation. Provider: <b id="ai-provider">not configured</b>.</p>
+                  <div id="ai-loading" class="ai-loading" hidden><span class="spinner"></span><span>Reviewing scope and description. This can take up to a minute...</span></div>
+                  <div id="ai-error" class="ai-error" hidden><span id="ai-error-copy"></span><button id="retry-ai" class="text-button">Try AI review</button></div>
+                  <div id="ai-result" hidden>
+                    <div class="ai-grid"><div><span>Scope</span><b id="ai-scope"></b><p id="ai-scope-reason"></p></div><div><span>Description</span><b id="ai-description"></b><p id="ai-description-reason"></p></div></div>
+                    <p id="ai-note" class="ai-note"></p>
+                    <div id="ai-replies" class="ai-replies" hidden><div><b>Suggested canned lines</b><p>Review the wording before adding it to your editable draft.</p></div><div id="ai-reply-lines"></div><button id="add-ai-replies" class="secondary-button">Add to reply draft</button></div>
+                  </div>
+                </section>
+
+                <section class="findings-card"><div class="section-title"><div><span class="eyebrow">Rule-based checks</span><h2>Review findings</h2></div><span id="verdict-badge" class="verdict-badge"></span></div><p class="helper">Verify every finding against the record. Automated checks do not decide scientific quality.</p><ul id="findings" class="findings"></ul><div id="manual-checks" class="manual-checks"></div></section>
+              </div>
+              <aside class="human-card"><span class="eyebrow">Your final checks</span><h2>Human review</h2><div id="human-checks"><label><input type="checkbox" name="scope">Computational scope and funding</label><label><input type="checkbox" name="description">Description explains work and data</label><label><input type="checkbox" name="files">README and file contents inspected</label><label><input type="checkbox" name="findings">Findings and exceptions resolved</label></div><p id="gate-note" class="helper">Complete all four checks before preparing approval.</p></aside>
+            </div>
+          </section>
+
+          <section id="record-tab" class="tab-panel" hidden><div class="record-grid"><section><h2>Description</h2><p id="description" class="long-copy"></p><h2>Keywords</h2><div id="keywords" class="chips"></div><h2>References</h2><ul id="references" class="references"></ul><h2>Funding</h2><p id="funding"></p></section><section><div class="section-title"><h2>Files</h2><span id="file-summary" class="helper"></span></div><p class="helper">Metadata only. File contents are not downloaded.</p><div class="table-scroll"><table><thead><tr><th>File</th><th>Size</th></tr></thead><tbody id="files"></tbody></table></div></section></div></section>
+
+          <section id="conversation-tab" class="tab-panel" hidden><div class="section-title"><div><span class="eyebrow">Request timeline</span><h2>Conversation</h2></div><a id="conversation-link" class="external-link" target="_blank" rel="noopener noreferrer">View full thread &nearr;</a></div><div id="conversation" class="conversation"></div></section>
+
+          <section id="reply-tab" class="tab-panel" hidden>
+            <div class="reply-heading"><div><span class="eyebrow">Francesca-calibrated structure</span><h2>Reply draft</h2><p class="helper">Edit freely. Sending always opens a production preview and requires the request ID.</p></div><span id="reply-state" class="not-sent">NOT SENT</span></div>
+            <textarea id="reply" rows="14" maxlength="20000" spellcheck="true" aria-label="Reply draft"></textarea>
+            <div class="reply-meta"><span id="reply-count">0 characters</span><span>Plain text is safely converted to Archive HTML.</span></div>
+            <div class="reply-actions"><button id="copy-reply" class="secondary-button">Copy reply</button><span id="copy-status" role="status"></span><a id="reply-thread-link" class="text-button link-button" target="_blank" rel="noopener noreferrer">Open conversation &nearr;</a><button id="send-reply" disabled>Preview and send reply</button></div>
+          </section>
+
+          <footer class="decision-bar"><div><b id="decision-title">Review required</b><span id="decision-copy">AI and rules only suggest; you make the decision.</span></div><div><a id="edit-record" class="secondary-button button-link" target="_blank" rel="noopener noreferrer">Edit in Archive &nearr;</a><button id="prepare" disabled>Prepare approval</button></div></footer>
+        </div>
+      </article>
+    </section>
+
+    <section id="history-view" class="view" hidden><div class="page-intro"><div><p class="eyebrow">Decision archive</p><h1>Moderation history</h1><p>Use past outcomes as precedents. Records and decisions remain read-only here.</p></div></div><div class="history-card"><div class="history-toolbar"><div class="segmented"><button class="active" data-history-status="accepted">Accepted</button><button data-history-status="declined">Declined</button><button data-history-status="submitted">Open</button></div><span id="history-total"></span></div><div id="history-loading" class="queue-loading" hidden><span class="spinner"></span>Loading history...</div><div id="history-list" class="history-list"></div><div class="pagination"><button id="history-prev" class="secondary-button">&larr; Previous</button><span id="history-page">Page 1</span><button id="history-next" class="secondary-button">Next &rarr;</button></div></div></section>
+
+    <section id="playbook-view" class="view" hidden><div class="page-intro"><div><p class="eyebrow">Living moderation guide</p><h1>Francesca's playbook</h1><p>Generalized from prior decisions and replies; private conversation text is not stored in the repository.</p></div></div><div class="playbook-grid"><section class="playbook-card source-card"><span class="eyebrow">Calibration</span><h2 id="playbook-source">Historical precedent</h2><div class="calibration-stats"><div><b id="sample-requests">&mdash;</b><span>requests sampled</span></div><div><b id="sample-comments">&mdash;</b><span>moderator replies</span></div><div><b id="sample-decisions">&mdash;</b><span>accepted decisions checked</span></div><div><b id="sample-date">&mdash;</b><span>last calibrated</span></div></div><p id="playbook-attribution" class="helper"></p><h3 class="calibration-heading">Corrections learned from accepted records</h3><ul id="schema-corrections" class="principles compact"></ul></section><section class="playbook-card"><span class="eyebrow">Reply principles</span><h2>How to communicate</h2><ol id="principles" class="principles"></ol></section><section class="playbook-card template-card"><span class="eyebrow">Default structure</span><h2>Change request template</h2><pre id="reply-template"></pre></section><section class="playbook-card guardrail-card"><span class="eyebrow">Guardrails</span><h2>What remains human</h2><ul><li>Scientific scope and ambiguous descriptions</li><li>File-content and copyright inspection</li><li>Funding exceptions and escalations</li><li>Every edit, decline, and publication decision</li><li>The final review and send of every reply</li></ul></section></div></section>
+  </main>
+
+  <dialog id="reply-dialog" aria-labelledby="reply-dialog-title">
+    <button id="reply-dialog-close" class="dialog-close icon-button" aria-label="Close">&times;</button>
+    <p class="eyebrow danger-text">External production action</p><h2 id="reply-dialog-title">Preview reply before sending</h2>
+    <p>This will add a comment to the submitter's Archive conversation. It will not accept, decline, edit, or publish the record.</p>
+    <p id="reply-preview-title" class="reply-preview-title"></p>
+    <div class="target-line"><span>Target request</span><code id="reply-preview-target"></code></div>
+    <pre id="reply-preview" class="reply-preview"></pre>
+    <label for="reply-confirmation">Type the request ID exactly to confirm this target</label><input id="reply-confirmation" autocomplete="off" spellcheck="false">
+    <label class="acknowledge"><input id="reply-ack" type="checkbox">I reviewed the complete message and understand it will be sent to the submitter.</label>
+    <button id="reply-trigger" class="danger-button" disabled>Send reply now</button><p id="reply-send-status" role="status"></p>
+  </dialog>
+
+  <dialog id="handoff-dialog" aria-labelledby="handoff-title">
+    <button id="handoff-close" class="dialog-close icon-button" aria-label="Close">&times;</button><p class="eyebrow">Final read-only checkpoint</p><h2 id="handoff-title">Prepare approval in the Archive</h2><p id="handoff-record-title"></p><p>The app will re-read the draft and verify that nothing changed. It will not publish the record.</p><label for="confirmation">Type this request ID to confirm the target</label><code id="confirmation-target"></code><input id="confirmation" autocomplete="off" spellcheck="false"><button id="trigger" disabled>Run final safety check</button><p id="handoff-status" role="status"></p><a id="final-link" class="button-link primary-link" target="_blank" rel="noopener noreferrer" hidden>Open Archive to approve &nearr;</a>
+  </dialog>
+</body>
+</html>

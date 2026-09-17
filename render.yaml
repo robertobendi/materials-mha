@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: materials-cloud-moderation
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: MC_AI_PROVIDER
+        value: openrouter
+      - key: MC_AI_KEY
+        sync: false

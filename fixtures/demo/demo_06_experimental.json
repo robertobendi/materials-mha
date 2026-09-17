@@ -1,0 +1,78 @@
+{
+  "metadata": {
+    "resource_type": {
+      "id": "dataset",
+      "title": {
+        "en": "Dataset"
+      }
+    },
+    "title": "Scanning tunneling microscopy of pentacene monolayers on Cu(111)",
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Aliyeva, Nigar",
+          "given_name": "Nigar",
+          "family_name": "Aliyeva"
+        },
+        "affiliations": [
+          {
+            "name": "Institute of Experimental Physics, University of Innsbruck, Technikerstrasse 25, 6020 Innsbruck, Austria"
+          }
+        ]
+      }
+    ],
+    "description": "<p>We report scanning tunneling microscopy and atomic force microscopy measurements of pentacene monolayers grown on Cu(111) under ultra-high vacuum. Images acquired at 4 K resolve the molecular orbital structure and reveal two coexisting ordered phases. Raw scans for all imaging conditions are included.</p>",
+    "subjects": [
+      {
+        "subject": "scanning tunneling microscopy"
+      },
+      {
+        "subject": "pentacene"
+      },
+      {
+        "subject": "surface science"
+      }
+    ],
+    "funding": []
+  },
+  "custom_fields": {
+    "mc_references": [
+      {
+        "ref_resource_type": "publication-article",
+        "ref_citation": "N. Aliyeva, Ordered phases of pentacene on Cu(111) imaged at 4 K, Surface Science 748, 122601 (2026), 10.1016/j.susc.2026.122601"
+      }
+    ]
+  },
+  "pids": {
+    "doi": {
+      "identifier": "10.24435/materialscloud:d6-c6",
+      "provider": "datacite"
+    },
+    "mcid": {
+      "identifier": "2026.145",
+      "provider": "mcid"
+    }
+  },
+  "files": {
+    "enabled": true,
+    "count": 3,
+    "entries": {
+      "scan01_phase_a.sxm": {
+        "size": 2411008,
+        "mimetype": "application/octet-stream",
+        "ext": "sxm"
+      },
+      "scan02_phase_b.sxm": {
+        "size": 2398112,
+        "mimetype": "application/octet-stream",
+        "ext": "sxm"
+      },
+      "spectra_overview.png": {
+        "size": 1822144,
+        "mimetype": "image/png",
+        "ext": "png"
+      }
+    }
+  }
+}

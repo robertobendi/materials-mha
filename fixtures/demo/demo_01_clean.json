@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "resource_type": {
+      "id": "dataset",
+      "title": {
+        "en": "Dataset"
+      }
+    },
+    "title": "High-throughput screening of two-dimensional magnetic materials from first principles",
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Fontana, Elisa",
+          "given_name": "Elisa",
+          "family_name": "Fontana"
+        },
+        "affiliations": [
+          {
+            "id": "02s376052",
+            "name": "École Polytechnique Fédérale de Lausanne"
+          }
+        ]
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Weber, Lukas",
+          "given_name": "Lukas",
+          "family_name": "Weber"
+        },
+        "affiliations": [
+          {
+            "name": "Theory and Simulation of Materials (THEOS), École Polytechnique Fédérale de Lausanne (EPFL), CH-1015 Lausanne, Switzerland"
+          }
+        ]
+      }
+    ],
+    "description": "<p>We perform a high-throughput first-principles screening of two-dimensional magnetic materials, starting from a pool of 3,258 exfoliable monolayers identified in earlier work. For each candidate we compute magnetic exchange couplings, magnetocrystalline anisotropies, and ordering temperatures using density-functional theory together with Green's-function methods. We identify 172 monolayers with robust magnetic order, including 14 predicted ferromagnets with critical temperatures above 100 K. The dataset contains all relaxed structures in CIF format, the computed exchange parameters, the provenance of every calculation, and the scripts used to run the screening workflow.</p>",
+    "subjects": [
+      {
+        "subject": "two-dimensional materials"
+      },
+      {
+        "subject": "magnetism"
+      },
+      {
+        "subject": "high-throughput"
+      },
+      {
+        "subject": "density-functional theory"
+      },
+      {
+        "subject": "MARVEL"
+      }
+    ],
+    "funding": [
+      {
+        "funder": {
+          "id": "00vvxbe27",
+          "name": "NCCR MARVEL"
+        },
+        "award": {
+          "acronym": "MARVEL/P1",
+          "number": "p1"
+        }
+      }
+    ]
+  },
+  "custom_fields": {
+    "mc_references": [
+      {
+        "ref_resource_type": "publication-article",
+        "ref_citation": "E. Fontana, L. Weber, Magnetic order in exfoliable two-dimensional crystals from high-throughput first-principles screening, npj Computational Materials 12, 88 (2026), 10.1038/s41524-026-01344-0"
+      }
+    ]
+  },
+  "pids": {
+    "doi": {
+      "identifier": "10.24435/materialscloud:d1-c1",
+      "provider": "datacite"
+    },
+    "mcid": {
+      "identifier": "2026.140",
+      "provider": "mcid"
+    }
+  },
+  "files": {
+    "enabled": true,
+    "count": 4,
+    "entries": {
+      "README.md": {
+        "size": 5233,
+        "mimetype": "text/markdown",
+        "ext": "md"
+      },
+      "structures_cif.tar.gz": {
+        "size": 48211002,
+        "mimetype": "application/gzip",
+        "ext": "gz"
+      },
+      "exchange_parameters.json": {
+        "size": 2144890,
+        "mimetype": "application/json",
+        "ext": "json"
+      },
+      "screening_scripts.zip": {
+        "size": 301224,
+        "mimetype": "application/zip",
+        "ext": "zip"
+      }
+    }
+  }
+}

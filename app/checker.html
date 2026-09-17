@@ -1,0 +1,601 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Materials Cloud Audit - record checker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<style>
+:root{
+  --line:#dee6e6; --bar:#f0f6f9; --slate:#434c5e; --ink:#364153; --body:#24292f;
+  --dim:#6b7280; --red:#c1000b; --redbg:#fcf1f1; --blue:#005b9e; --bluebg:#eaf3fa;
+  --ok:#048622; --okbg:#f0faf2; --warn:#946400; --warnbg:#fdf6e3;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--body);min-height:100vh;display:flex;flex-direction:column;
+  font:15px/1.6 "Open Sans","Lato","Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrap{width:100%;max-width:1100px;margin:0 auto;padding:0 24px}
+/* ── header, after archive.materialscloud.org ── */
+.mch{background:#fff;border-bottom:3px solid var(--line)}
+.mch-in{display:flex;align-items:center;gap:22px;height:62px}
+.brand{display:flex;align-items:center;gap:11px;color:var(--ink);text-decoration:none;
+  font-size:19px;font-weight:300;white-space:nowrap}
+.brand b{font-weight:700}
+.brand .arch{font-size:10px;font-weight:800;letter-spacing:.18em;color:#d21f15;
+  border:1px solid currentColor;border-radius:4px;padding:2px 7px;margin-left:6px}
+.mclogo{flex:none}
+.mnav{display:flex;gap:2px;margin-left:auto}
+.mnav span{font-size:12px;font-weight:700;letter-spacing:.07em;color:var(--dim);padding:7px 13px;border-radius:6px}
+.mnav .active{color:var(--red);background:#f3f4f7}
+.mtag{font-size:11.5px;color:var(--dim);border-left:1px solid var(--line);padding-left:18px;white-space:nowrap;
+  text-decoration:none}
+a.mtag:hover{color:var(--blue)}
+@media(max-width:860px){.mnav,.mtag{display:none}}
+/* ── input toolbar, the #f0f6f9 bar ── */
+.toolbar{background:var(--bar);border-bottom:3px solid var(--line);padding:26px 0 22px}
+h1{font-size:20px;font-weight:700;color:var(--ink);margin:0 0 2px}
+.sub{color:var(--dim);font-size:13.5px;margin:0 0 14px}
+textarea{width:100%;min-height:86px;padding:13px 16px;border:1px solid #c7d3da;border-radius:8px;
+  background:#fff;color:var(--body);resize:vertical;transition:border-color .15s,box-shadow .15s;
+  font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,91,158,.12)}
+textarea::placeholder{color:#9aa7b1}
+.row{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:9px 22px;cursor:pointer}
+#go{background:var(--blue);color:#fff}
+#go:hover{background:#004a82}
+#go:disabled{opacity:.5;cursor:default}
+.ghost{background:transparent;color:var(--dim);padding:9px 6px}
+.hint{color:var(--dim);font-size:12.5px}
+.exlab{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+.chip{background:#fff;border:1px solid #c7d3da;color:var(--blue);padding:4px 13px;
+  font-size:12.5px;font-weight:600;border-radius:999px;transition:border-color .12s,box-shadow .12s}
+.chip:hover{border-color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+/* ── results layout ── */
+main{flex:1}
+#out{padding:26px 0 60px}
+.empty{color:var(--dim);text-align:center;padding:80px 0 50px;font-size:14px}
+.spin{color:var(--dim);text-align:center;padding:50px 0}
+.err{background:var(--redbg);color:var(--red);border:1px solid rgba(193,0,11,.25);
+  border-radius:10px;padding:16px 20px;font-size:14px}
+.banner{border-radius:10px;padding:17px 22px;border:1px solid;border-left-width:5px;animation:rise .35s ease both}
+.banner h2{margin:0;font-size:18px;font-weight:700}
+.banner p{margin:4px 0 0;font-size:13.5px;opacity:.9}
+.ok{background:var(--okbg);color:var(--ok);border-color:rgba(4,134,34,.3)}
+.warn{background:var(--warnbg);color:var(--warn);border-color:rgba(148,100,0,.3)}
+.stop{background:var(--redbg);color:var(--red);border-color:rgba(193,0,11,.3)}
+.changes{background:#f3f6f8;color:var(--ink);border-color:#d5dee4;border-left-color:var(--slate)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:22px;margin-top:20px;align-items:start}
+@media(max-width:960px){.cols{grid-template-columns:1fr}}
+/* ── record preview, like an Archive record page ── */
+.recview{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px 30px 30px;
+  animation:rise .35s .05s ease both}
+.badges{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:.02em}
+.b-draft{background:#fdf3e7;color:#b25d0e;border:1px solid #ecc79d}
+.b-type{background:#eef1f4;color:var(--ink)}
+.b-id{background:var(--bluebg);color:var(--blue)}
+.b-doi{background:#fff;color:var(--blue);border:1px solid #bcd6ea}
+.b-ok{background:var(--okbg);color:var(--ok);border:1px solid rgba(4,134,34,.3)}
+.b-date{background:transparent;color:var(--dim);font-weight:600}
+.rtitle{font-size:22px;line-height:1.35;font-weight:700;color:#1f2833;margin:0 0 14px}
+.authors{display:flex;flex-direction:column;gap:9px}
+.author .aname{font-weight:600;color:var(--ink);font-size:14.5px}
+.aff{font-size:12.5px;color:var(--dim);margin-top:1px}
+.ror{display:inline-block;font-size:9px;font-weight:800;color:#fff;background:#53baa1;
+  border-radius:3px;padding:1px 5px;margin-left:6px;letter-spacing:.06em;vertical-align:1px}
+h3.sec{font-size:11px;text-transform:uppercase;letter-spacing:.11em;color:var(--dim);font-weight:800;
+  margin:22px 0 10px;padding-top:16px;border-top:1px solid #edf1f3}
+.seccount{color:#9aa7b1;font-weight:700;margin-left:5px}
+.desc{font-size:14.5px;color:#333b45;line-height:1.7;margin:0}
+.kws{display:flex;gap:6px;flex-wrap:wrap}
+.kw{background:#eef1f4;color:var(--ink);font-size:12.5px;padding:3px 12px;border-radius:999px}
+.fund{font-size:13.5px;color:#333b45}
+.refs{margin:0;padding:0;list-style:none;font-size:13.5px;color:#333b45}
+.refs li{padding:5px 0}
+.none{color:#9aa7b1;font-style:italic;font-size:13px}
+table.files{width:100%;border-collapse:collapse;font-size:13px}
+.files th{text-align:left;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);
+  font-weight:800;padding:5px 8px;border-bottom:2px solid var(--line)}
+.files td{padding:8px;border-bottom:1px solid #eef2f4;vertical-align:top}
+td.fn{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;word-break:break-all}
+td.fs{white-space:nowrap;color:var(--dim);text-align:right}
+.fmt{font-size:10px;font-weight:800;letter-spacing:.05em;padding:2px 9px;border-radius:999px;
+  text-transform:uppercase;white-space:nowrap}
+.fmt.okf{background:var(--okbg);color:var(--ok)}
+.fmt.badf{background:var(--redbg);color:var(--red)}
+.fmt.chk{background:var(--warnbg);color:var(--warn)}
+.sizebox{margin-top:14px}
+.sizebar{height:7px;border-radius:99px;background:#e6edf1;overflow:hidden;margin-bottom:6px}
+.sizebar i{display:block;height:100%;border-radius:99px;background:var(--blue);
+  animation:grow .7s .3s ease both}
+.sizebar.over i{background:var(--red)}
+.sizetxt{font-size:12.5px;color:var(--dim)}
+/* ── inline error highlighting ── */
+.flag-red:not(tr){box-shadow:inset 3px 0 0 var(--red);
+  background:linear-gradient(90deg,rgba(193,0,11,.05),rgba(193,0,11,0) 65%);
+  padding-left:12px;border-radius:4px}
+.flag-amber:not(tr){box-shadow:inset 3px 0 0 var(--warn);
+  background:linear-gradient(90deg,rgba(148,100,0,.06),rgba(148,100,0,0) 65%);
+  padding-left:12px;border-radius:4px}
+tr.flag-red td{background:#fcf3f3}
+tr.flag-red td:first-child{box-shadow:inset 3px 0 0 var(--red)}
+tr.flag-amber td{background:#fdf8ea}
+tr.flag-amber td:first-child{box-shadow:inset 3px 0 0 var(--warn)}
+.squig{text-decoration:underline;text-decoration-style:wavy;text-decoration-color:rgba(193,0,11,.65);
+  text-decoration-thickness:2px;text-underline-offset:6px}
+.mark{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;border-radius:999px;
+  padding:2px 9px;margin:0 0 0 8px;vertical-align:2px;cursor:help;white-space:nowrap}
+.mark.red{background:var(--red);color:#fff}
+.mark.amber{background:var(--warn);color:#fff}
+/* ── review rail ── */
+.panel{display:flex;flex-direction:column;gap:16px;position:sticky;top:16px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:17px 19px;
+  animation:rise .35s ease both}
+.pcard h3{margin:0 0 8px;font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--dim);font-weight:800}
+.count{display:inline-flex;min-width:19px;justify-content:center;background:var(--red);color:#fff;
+  border-radius:999px;font-size:11px;padding:1px 7px;margin-left:7px;vertical-align:1px}
+.count.amber{background:var(--warn)}
+.flist{list-style:none;margin:0;padding:0}
+.flist li{padding:9px 8px;border-radius:8px;font-size:13px;color:var(--ink);cursor:pointer;
+  border-top:1px solid #f0f3f5;transition:background .12s}
+.flist li:first-child{border-top:0}
+.flist li:hover{background:#f4f8fb}
+.flist li b{color:var(--red);font-weight:800;font-size:11px;margin-right:5px;
+  font-family:ui-monospace,Menlo,monospace}
+.flist.amber li b{color:var(--warn)}
+.flist small{display:block;color:#9aa7b1;font-size:11px;margin-top:2px;word-break:break-word;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.jump{float:right;color:#c2ccd3;font-size:13px;margin-left:8px}
+.flist li:hover .jump{color:var(--blue)}
+/* reply bubble, like the request conversation */
+.bubble{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.bhead{display:flex;align-items:center;gap:8px;background:#f6f8fa;border-bottom:1px solid var(--line);
+  padding:7px 12px;font-size:12px;color:var(--dim);font-weight:600}
+.avatar{width:22px;height:22px;border-radius:50%;background:var(--slate);color:#fff;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800}
+.draftpill{margin-left:auto;font-size:9.5px;font-weight:800;letter-spacing:.1em;color:#b25d0e;
+  background:#fdf3e7;border:1px solid #ecc79d;border-radius:4px;padding:1px 7px}
+.btext{padding:13px 15px;font-size:13px;line-height:1.65;color:#2c343d;white-space:pre-wrap;
+  max-height:340px;overflow-y:auto}
+.reply-none{border-radius:9px;padding:13px 15px;font-size:13px;line-height:1.6}
+.reply-none.ok{background:var(--okbg);color:var(--ok)}
+.reply-none.warn{background:var(--warnbg);color:var(--warn)}
+.reply-none.stop{background:var(--redbg);color:var(--red)}
+.copy{background:#fff;border:1px solid #c7d3da;color:var(--blue);padding:8px 16px;
+  font-size:13px;margin-top:12px;border-radius:8px}
+.copy:hover{border-color:var(--blue)}
+.fine{color:#9aa7b1;font-size:11.5px;line-height:1.55;margin:12px 0 0}
+details.scope{margin-top:12px;border-top:1px solid #edf1f3;padding-top:10px}
+details.scope summary{font-size:11.5px;font-weight:700;color:var(--dim);cursor:pointer}
+.scoperow{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #f0f3f5;
+  font-size:12px;color:var(--dim);line-height:1.45}
+.scoperow:last-child{border-bottom:0}
+.scoperow b{color:var(--ink);font-family:ui-monospace,Menlo,monospace;font-size:11px}
+.scoperow button{margin-left:auto;flex:none;font-size:11px;padding:3px 11px;border:1px solid #c7d3da;
+  background:#fff;color:var(--blue);border-radius:6px;font-weight:600}
+.scoperow button:hover{border-color:var(--blue)}
+/* AI review card */
+.airow{padding:9px 0;border-bottom:1px solid #f0f3f5;font-size:13px;color:var(--ink)}
+.airow:last-of-type{border-bottom:0}
+.airow small{display:block;color:var(--dim);font-size:12px;margin-top:4px;line-height:1.5}
+.aisec{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--dim);margin:14px 0 4px}
+.aiwait{color:var(--dim);font-size:12.5px;padding:6px 0;animation:pulse 1.4s ease infinite}
+@keyframes pulse{50%{opacity:.45}}
+/* ── footer, the slate band ── */
+.mcf{background:var(--slate);color:#cdd3dd;font-size:12.5px;line-height:1.75;padding:22px 0;
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.2)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+@keyframes grow{from{width:0!important}}
+@keyframes flash{0%{box-shadow:0 0 0 4px rgba(193,0,11,.3)}100%{box-shadow:0 0 0 4px rgba(193,0,11,0)}}
+.flash{animation:flash 1.1s ease}
+</style>
+
+<header class="mch"><div class="wrap mch-in">
+  <span class="brand">
+    <svg class="mclogo" width="34" height="27" viewBox="0 0 116.6 92.472" aria-hidden="true"><path transform="translate(-152.338,-14.264)" fill="#d21f15" d="m 241.114,95.092 h -18.64 c -3.88,-0.25 -5.084,-3.02 -3.496,-6.015 l 19.396,-32.048 c 0.37,-0.634 0.938,-0.796 2.026,-0.67 v -0.006 h 0.016 c 3.51,0.478 6.256,-1.585 7.65,-3.303 0.882,-1.23 2.34,-0.948 2.94,-0.698 7.612,3.713 12.634,11.483 12.634,20.213 0,12.42 -10.104,22.525 -22.526,22.525 M 215.848,84.014 c -1.432,2.37 -3.02,4.735 -5.234,4.735 -2.214,0 -3.756,-2.365 -5.188,-4.734 L 188.78,56.51 c -2.286,-3.77 0.13,-6.47 2.97,-6.47 h 37.78 c 2.808,0 5.194,2.637 3.042,6.345 z m -5.208,17.53 c -2.104,0 -3.802,-1.7 -3.802,-3.8 0,-2.1 1.698,-3.803 3.802,-3.803 2.098,0 3.797,1.703 3.797,3.803 0,2.1 -1.7,3.8 -3.797,3.8 M 198.197,95.092 H 180.16 c -12.422,0 -22.526,-10.104 -22.526,-22.525 0,-8.714 5.006,-16.475 12.6,-20.194 0.578,-0.245 1.963,-0.537 2.848,0.546 1.396,1.787 3.016,3.032 5.808,3.37 1.036,0.126 1.938,0.07 1.938,0.07 1.442,-0.168 2.036,0.623 2.276,1.008 l 18.766,31.007 c 2.26,3.39 0.988,6.718 -3.673,6.718 m -18,-51.52 c 2.1,0 3.803,1.703 3.803,3.8 0,2.1 -1.704,3.804 -3.803,3.804 -2.1,0 -3.803,-1.704 -3.803,-3.803 0,-2.1 1.704,-3.802 3.803,-3.802 m 4.51,-6.344 c 4.115,-10.46 14.375,-17.66 25.907,-17.66 11.53,0 21.79,7.2 25.906,17.66 0.71,2.057 -0.646,2.844 -0.646,2.844 -1.953,1.296 -2.598,2.78 -2.808,3.27 h -0.005 c -0.196,0.427 -0.555,1.397 -1.66,1.397 h -41.547 c -1.093,0 -1.38,-0.656 -1.656,-1.386 -0.08,-0.21 -0.54,-1.77 -2.875,-3.32 -0.598,-0.394 -1.23,-1.02 -0.614,-2.806 m 56.358,6.344 c 2.1,0 3.803,1.703 3.803,3.8 0,2.1 -1.704,3.804 -3.804,3.804 -2.098,0 -3.8,-1.704 -3.8,-3.803 0,-2.1 1.702,-3.802 3.8,-3.802 m 10.443,3.208 c -0.026,-0.01 -0.053,-0.027 -0.09,-0.04 -1.035,-0.377 -1.468,-1.18 -1.854,-2.34 -0.87,-2.604 -2.853,-4.5 -5.337,-5.432 -1.34,-0.537 -2.106,-1.808 -2.252,-2.256 l -0.005,0.005 c -4.508,-13.21 -17.113,-22.45 -31.358,-22.45 -14.244,0 -26.853,9.235 -31.36,22.453 v -0.005 c -0.155,0.464 -0.952,1.797 -2.368,2.303 -2.453,0.963 -4.267,2.526 -5.235,5.495 -0.374,1.15 -0.75,1.85 -1.838,2.25 -0.036,0.016 -0.068,0.026 -0.094,0.042 -10.396,4.198 -17.38,14.318 -17.38,25.766 0,15.344 12.48,27.828 27.823,27.828 h 18.928 c 2.734,0 3.093,0.73 4.01,2.27 1.464,2.46 4.375,4.07 7.516,4.07 3.416,0 6.395,-1.918 7.916,-4.735 0.51,-0.803 1.303,-1.604 3.604,-1.604 h 18.98 c 15.343,0 27.823,-12.483 27.823,-27.827 0,-11.47 -7.005,-21.604 -17.428,-25.787"/></svg>
+    Materials&nbsp;<b>Cloud</b><span class="arch">AUDIT</span></span>
+  <nav class="mnav"><span class="active">RECORD CHECKER</span></nav>
+  <a class="mtag" href="https://archive.materialscloud.org" target="_blank" rel="noopener">open the Archive &nearr;</a>
+  <span class="mtag">read-only</span>
+</div></header>
+<div class="toolbar"><div class="wrap">
+  <h1>Record checker</h1>
+  <p class="sub">Paste a record and find out whether it can be published, or what to ask for - in the approved canned wording.</p>
+  <textarea id="in" spellcheck="false"
+    placeholder="Paste one of:&#10;&#10;   https://archive.materialscloud.org/records/xyf4v-1w785&#10;   2026.132&#10;   { &hellip;the record JSON&hellip; }"></textarea>
+  <div class="row">
+    <button id="go">Check</button>
+    <button class="ghost" id="clear" hidden>Clear</button>
+    <span class="hint">&#8984;/Ctrl + Enter</span>
+  </div>
+  <div class="row">
+    <span class="exlab">Examples</span>
+    <button class="chip" data-ex="clean">clean</button>
+    <button class="chip" data-ex="needs fixes">needs fixes</button>
+    <button class="chip" data-ex="DOI as URL">DOI as URL</button>
+    <button class="chip" data-ex="too big, waived">too big, waived</button>
+    <button class="chip" data-ex="too big, escalate">too big, escalate</button>
+    <button class="chip" data-ex="experimental">experimental</button>
+  </div>
+</div></div>
+<main class="wrap"><div id="out"></div></main>
+<footer class="mcf"><div class="wrap">
+  Runs entirely in your browser - no server, no upload. This page cannot accept, decline, or comment on anything - it only tells you what it sees.<br>
+  Accepting a record is irreversible, so that decision stays with a human in the Archive itself.
+</div></footer>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CANNED={"r1": "Please note that the Materials Cloud Archive is dedicated to computational materials science, and it appears that your submission may fall outside this scope. We recommend depositing your data on https://zenodo.org instead. If you believe your work is relevant to computational materials science and would like to clarify how it fits within this domain, please don’t hesitate to contact us. Adding a more detailed description and a reference link might help us to better understand the topic of your work. Otherwise, I will proceed with declining your request to publish.", "r2": "Please note that the Materials Cloud Archive is dedicated to computational materials science, and it appears that your submission may primarily consist of experimental work. If you believe your work is relevant to computational materials science and would like to clarify how it fits within this domain, please don’t hesitate to contact us. Otherwise, I will proceed with declining your request to publish.", "r3": "Thank you for your submission to the Materials Cloud Archive repository. After careful consideration, we regret to inform you that we are unable to accept the record for publication, as it does not align with the scope of the repository that is computational materials science. We appreciate your interest and suggest that you consider submitting your work to a more general purpose repository such as Zenodo (https://zenodo.org), which may be better suited for the content of your record. Thank you for your understanding.", "r4": "Before reviewing your submission, we would like to know whether this study is mainly experimental or if it also includes some computational work. The Materials Cloud Archive is dedicated to computational materials science, and it appears that your submission may fall outside this scope. Could you clarify ?", "f1": "- Please add a file named files_description.md or README.md/.txt that lists each filename along with a brief description of its contents. You can find examples of these files in other published records (Example: https://archive.materialscloud.org/record/2025.98).", "f2": "- We would like to maintain a consistent file format for the files_description.md file across all records we publish. Could you please rename the file describing the contents to files_description.md? You can download an example from another published record (e.g., https://archive.materialscloud.org/record/2025.104). Please keep the same syntax, using ** to make filenames appear in bold, and modify it accordingly to reflect the correct filenames and their descriptions.", "f3": "- Please remove the sentence 'This file is automatically generated. It contains the descriptions of each uploaded file as provided by the user.' from the file files_description.md. This sentence was automatically added to records during the migration of the Archive to a new version in June 2025. You do not need to include it in your files_description.md file.", "f4": "- Please add a README.md/.txt file or a files_description.md file that provides detailed information about the structure and content of the archive file/s.", "f5": "- Please add a file named files_description.md that lists each filename along with a brief description of its contents. Similarly to the file you have in the previous version of this record, but removing the sentence 'This file is automatically generated. It contains the descriptions of each uploaded file as provided by the user.'", "f6": "- Please add files. TODO", "f7": "- The file format is not open. To ensure accessibility and long-term usability, please replace the file with an open and supported alternative, such as .zip or .tar.zip.", "f8": "- Please add a file extension (.txt or .md) to the README file so that it can be opened correctly in Preview.", "t1": "- Please revise the title to use lowercase letters, except for the first word.", "t2": "- Please remove 'dataset' from the title.", "t3": "- Please revise the title so that it follows the format of a journal paper title.", "rt1": "- You selected 'Software' as the resource type, although you uploaded dataset files. Could you please explain your choice, or select 'Dataset' instead?", "d1": "- There is a misspell in the description", "d2": "- Could you move the sentence 'This dataset contains ...' at the end of the description or place it in a README.txt or files_description.md file ?", "d3": "- The description should clarify the topic and purpose of the work, and briefly explain the contents of the dataset. It should be in the format of an abstract for a journal paper.", "d4": "- You have some return characters in the description that cause the text to be aligned to the left. Could you please remove those characters?", "d5": "- Could you move the current description in a README.txt file ?", "d6": "- Could you extend the description ?", "d7": "- Please start the description with a capital letter.", "d8": "- Please add a full stop at the end of the description.", "d9": "- Please revise the description so that it resembles the abstract of a journal article.", "a1": "- Are you the sole author of this work? If not, please add the names of all co-authors.", "af1": "- Please remove the numbers (e.g., 1., 2.) in front of the institute/university names. The numbering is automatically generated. You can preview how the record will appear by clicking on Preview and then on Show affiliations.", "af2": "- Please add the full address for each affiliation. Affiliations should include the name of the institute, faculty, or department; the name of the university or research center; and the location. For example: Theory and Simulation of Materials (THEOS), École Polytechnique Fédérale de Lausanne (EPFL), CH-1015 Lausanne, Switzerland. Alternatively, you can start typing the name of the affiliation and select it from the dropdown menu. This will register the affiliation using its ROR ID (see https://ror.org). You can preview how the record will appear by clicking on Preview and then on Show affiliations.", "af3": "- Please add the affiliation of each author.", "ref1": "- Since your paper is not yet published, please remove the DOI link, as the link does not currently resolve. Instead, add a comment such as \"Submitted to The Journal of Chemical Physics.\". Once your paper is published, you will be able to update the reference and include the DOI.", "ref2": "- Please add the full journal reference, including the authors, title and reference number if available. If the article has not yet been published, include a comment such as 'Submitted'. If it has been published, please provide a link to the journal (DOI or URL).", "ref3": "- The DOI link is incorrect. Please correct it and use only the last part of the URL, do not include 'https://doi.org/'. If the DOI link does not resolve because the paper is not yet published, please remove the link from the record. Once this record is published, you will still be able to update the references and add the DOI link when your paper is published.", "ref4": "- Please correct the DOI link, use only the last part of the URL with the DOI, do not include 'https://doi.org/'.", "ref5": "- If your paper has been submitted or is not yet submitted, please add the list of authors, the title, and the name of the journal you plan to submit it to. Include a comment such as 'Submitted' or 'To be submitted' (see, for example: https://archive.materialscloud.org/record/2025.121).", "ref6": "- If the paper is published, please add a link to the reference. You may provide either a URL or a DOI.", "l1": "- Please note that the license addendum from the previous version is not automatically included in this version. If you wish to add it, create a file named license_addendum.txt and include the sentence used in the previous version.", "k1": "- Add minimum 3 keywords. Keywords should be added one at a time in the upload form. Press 'Enter' after typing each keyword.", "mc1": "- The link to the Materials Cloud Discover section is incorrect. It should point to one of the datasets listed at https://www.materialscloud.org/discover/menu. Will the data from this record be published in Materials Cloud Discover? If not, please remove this section from the upload form."};
+const OPEN=[".aiida", ".tar.gz", ".tgz", ".zip", ".gz", ".bz2", ".csv", ".tsv", ".txt", ".yaml", ".yml", ".xml", ".xsd", ".json", ".hdf", ".h4", ".hdf4", ".he2", ".h5", ".hdf5", ".he5", ".cif", ".xyz", ".xsf", ".mif", ".win", ".wout", ".inp", ".out", ".in", ".dat", ".db", ".bson", ".mongo", ".ipynb", ".npy", ".py", ".sh", ".itx", ".vesta", ".md", ".png", ".tif", ".tiff", ".jpg", ".svg"];
+const BLOCKED={".rar": "Not an open format. Ask for .zip / .7z / .tar.gz.", ".mat": "Matlab, proprietary and undocumented. Ask for compressed CSV or HDF5.", ".m": "Matlab. Ask for an open alternative.", ".opj": "Origin project file. Ask for CSV.", ".opju": "Origin project file. Ask for CSV.", ".sxm": "Image SXM, closed source, Mac-only.", ".pyc": "Compiled bytecode, not a data format, unnecessary."};
+const CASE=[".pkl", ".pickle", ".eps", ".agr"];
+const WAIVERS=["MARVEL", "NCCR MARVEL", "SNSF", "ERC", "CSCS", "EPFL"];
+const extOf=n=>{const l=n.toLowerCase();for(const e of ['.tar.gz','.tar.bz2'])if(l.endsWith(e))return e;const i=l.lastIndexOf('.');return i<0?'':l.slice(i)};
+const EXAMPLES={
+ "clean": {"metadata": {"resource_type": {"id": "dataset", "title": {"en": "Dataset"}}, "title": "High-throughput screening of two-dimensional magnetic materials from first principles", "creators": [{"person_or_org": {"type": "personal", "name": "Fontana, Elisa", "given_name": "Elisa", "family_name": "Fontana"}, "affiliations": [{"id": "02s376052", "name": "École Polytechnique Fédérale de Lausanne"}]}, {"person_or_org": {"type": "personal", "name": "Weber, Lukas", "given_name": "Lukas", "family_name": "Weber"}, "affiliations": [{"name": "Theory and Simulation of Materials (THEOS), École Polytechnique Fédérale de Lausanne (EPFL), CH-1015 Lausanne, Switzerland"}]}], "description": "<p>We perform a high-throughput first-principles screening of two-dimensional magnetic materials, starting from a pool of 3,258 exfoliable monolayers identified in earlier work. For each candidate we compute magnetic exchange couplings, magnetocrystalline anisotropies, and ordering temperatures using density-functional theory together with Green's-function methods. We identify 172 monolayers with robust magnetic order, including 14 predicted ferromagnets with critical temperatures above 100 K. The dataset contains all relaxed structures in CIF format, the computed exchange parameters, the provenance of every calculation, and the scripts used to run the screening workflow.</p>", "subjects": [{"subject": "two-dimensional materials"}, {"subject": "magnetism"}, {"subject": "high-throughput"}, {"subject": "density-functional theory"}, {"subject": "MARVEL"}], "funding": [{"funder": {"id": "00vvxbe27", "name": "NCCR MARVEL"}, "award": {"acronym": "MARVEL/P1", "number": "p1"}}]}, "custom_fields": {"mc_references": [{"ref_resource_type": "publication-article", "ref_citation": "E. Fontana, L. Weber, Magnetic order in exfoliable two-dimensional crystals from high-throughput first-principles screening, npj Computational Materials 12, 88 (2026), 10.1038/s41524-026-01344-0"}]}, "pids": {"doi": {"identifier": "10.24435/materialscloud:d1-c1", "provider": "datacite"}, "mcid": {"identifier": "2026.140", "provider": "mcid"}}, "files": {"enabled": true, "count": 4, "entries": {"README.md": {"size": 5233, "mimetype": "text/markdown", "ext": "md"}, "structures_cif.tar.gz": {"size": 48211002, "mimetype": "application/gzip", "ext": "gz"}, "exchange_parameters.json": {"size": 2144890, "mimetype": "application/json", "ext": "json"}, "screening_scripts.zip": {"size": 301224, "mimetype": "application/zip", "ext": "zip"}}}},
+ "needs fixes": {"metadata": {"resource_type": {"id": "dataset", "title": {"en": "Dataset"}}, "title": "Defect-Tolerant Carrier Injection In MoS2 Enabled By Recessed Metal Contacts", "creators": [{"person_or_org": {"type": "personal", "name": "Tan, Weiling", "given_name": "Weiling", "family_name": "Tan"}, "affiliations": [{"name": "1. Institute for Advanced Intelligence and Computing, Singapore"}]}, {"person_or_org": {"type": "personal", "name": "Ito, Kenta", "given_name": "Kenta", "family_name": "Ito"}, "affiliations": [{"name": "Department of Materials Science and Engineering, National University of Singapore, Singapore 117575, Republic of Singapore"}]}], "description": "<p>We investigate carrier injection through metal contacts to monolayer MoS2 in the presence of sulfur vacancies, using density-functional theory combined with nonequilibrium Green's-function transport calculations. We compare conventional top contacts with recessed contact geometries and show that the recessed geometry maintains efficient carrier injection even at defect densities where top contacts fail. The dataset contains the relaxed contact structures, the computed transmission spectra, and the projected local density of states for every defect configuration studied in the accompanying paper.</p>", "subjects": [{"subject": "MoS2"}, {"subject": "Schottky barrier"}], "funding": []}, "custom_fields": {"mc_references": [{"ref_resource_type": "publication-article", "ref_citation": "Not submitted yet"}]}, "pids": {"doi": {"identifier": "10.24435/materialscloud:d2-c2", "provider": "datacite"}, "mcid": {"identifier": "2026.141", "provider": "mcid"}}, "files": {"enabled": true, "count": 4, "entries": {"contact_top_pristine.vasp": {"size": 25580, "mimetype": "application/octet-stream", "ext": "vasp"}, "contact_recessed_pristine.vasp": {"size": 25476, "mimetype": "application/octet-stream", "ext": "vasp"}, "transmission_spectra.dat": {"size": 8123400, "mimetype": "text/plain", "ext": "dat"}, "pldos_all_configs.h5": {"size": 412009344, "mimetype": "application/x-hdf5", "ext": "h5"}}}},
+ "DOI as URL": {"metadata": {"resource_type": {"id": "dataset", "title": {"en": "Dataset"}}, "title": "Anharmonic phonon transport in halide perovskites from stochastic self-consistent theory", "creators": [{"person_or_org": {"type": "personal", "name": "Moreau, Camille", "given_name": "Camille", "family_name": "Moreau"}, "affiliations": [{"id": "02s376052", "name": "École Polytechnique Fédérale de Lausanne"}]}, {"person_or_org": {"type": "personal", "name": "Bianchi, Andrea", "given_name": "Andrea", "family_name": "Bianchi"}, "affiliations": [{"name": "Dipartimento di Fisica, Università degli Studi di Milano, via Celoria 16, 20133 Milano, Italy"}]}], "description": "<p>We compute the lattice thermal conductivity of the halide perovskites CsPbBr3 and CsPbI3 including anharmonicity to all orders through the stochastic self-consistent harmonic approximation. The phonon spectral functions show strong overdamping of the low-frequency modes near the cubic-to-tetragonal transition, and the computed conductivities agree with experiment to within fifteen percent between 300 and 600 K. The dataset contains the displacement ensembles, the effective force constants, the spectral functions, and the input files needed to reproduce every figure of the accompanying paper.</p>", "subjects": [{"subject": "halide perovskites"}, {"subject": "thermal conductivity"}, {"subject": "anharmonicity"}, {"subject": "phonons"}], "funding": [{"funder": {"id": "00vvxbe27", "name": "NCCR MARVEL"}, "award": {"acronym": "MARVEL/P1", "number": "p1"}}]}, "custom_fields": {"mc_references": [{"ref_resource_type": "publication-article", "ref_citation": "C. Moreau, A. Bianchi, Overdamped phonons and glass-like heat transport in caesium lead halides, Physical Review B 113, 094306 (2026), https://doi.org/10.1103/PhysRevB.113.094306"}]}, "pids": {"doi": {"identifier": "10.24435/materialscloud:d3-c3", "provider": "datacite"}, "mcid": {"identifier": "2026.142", "provider": "mcid"}}, "files": {"enabled": true, "count": 4, "entries": {"README.md": {"size": 3980, "mimetype": "text/markdown", "ext": "md"}, "displacement_ensembles.tar.gz": {"size": 1922330011, "mimetype": "application/gzip", "ext": "gz"}, "force_constants.h5": {"size": 240118222, "mimetype": "application/x-hdf5", "ext": "h5"}, "spectral_functions.zip": {"size": 88011245, "mimetype": "application/zip", "ext": "zip"}}}},
+ "too big, waived": {"metadata": {"resource_type": {"id": "dataset", "title": {"en": "Dataset"}}, "title": "Crystallization kinetics of Ge-rich phase-change alloys from machine-learning molecular dynamics", "creators": [{"person_or_org": {"type": "personal", "name": "Marchetti, Paolo", "given_name": "Paolo", "family_name": "Marchetti"}, "affiliations": [{"name": "Department of Materials Science, University of Milano-Bicocca, via R. Cozzi 55, 20125 Milano, Italy"}]}, {"person_or_org": {"type": "personal", "name": "Nguyen, Thanh", "given_name": "Thanh", "family_name": "Nguyen"}, "affiliations": [{"id": "02s376052", "name": "École Polytechnique Fédérale de Lausanne"}]}], "description": "<p>We study the phase separation and crystallization kinetics of Ge-rich GeSbTe alloys by molecular dynamics simulations with a machine-learning interatomic potential trained on density-functional theory data. Large-scale simulations with up to 32,000 atoms over tens of nanoseconds reveal a two-step mechanism in which segregation of excess germanium precedes the nucleation of the crystalline phase. The dataset contains the full training database, the fitted potential, and the complete molecular dynamics trajectories analysed in the accompanying publication.</p>", "subjects": [{"subject": "phase-change materials"}, {"subject": "machine learning"}, {"subject": "molecular dynamics"}, {"subject": "crystallization"}], "funding": [{"funder": {"id": "00vvxbe27", "name": "NCCR MARVEL"}, "award": {"acronym": "MARVEL/P1", "number": "p1"}}]}, "custom_fields": {"mc_references": [{"ref_resource_type": "publication-article", "ref_citation": "P. Marchetti, T. Nguyen, Two-step crystallization of Ge-rich GeSbTe alloys from machine-learning molecular dynamics, Journal of Materials Chemistry C 14, 2210 (2026), 10.1039/D6TC00412K"}]}, "pids": {"doi": {"identifier": "10.24435/materialscloud:d4-c4", "provider": "datacite"}, "mcid": {"identifier": "2026.143", "provider": "mcid"}}, "files": {"enabled": true, "count": 4, "entries": {"README.md": {"size": 2411, "mimetype": "text/markdown", "ext": "md"}, "training_database.tar.gz": {"size": 18000000000, "mimetype": "application/gzip", "ext": "gz"}, "trajectories.tar.gz": {"size": 10500000000, "mimetype": "application/gzip", "ext": "gz"}, "potential.zip": {"size": 8553846, "mimetype": "application/zip", "ext": "zip"}}}},
+ "too big, escalate": {"metadata": {"resource_type": {"id": "dataset", "title": {"en": "Dataset"}}, "title": "Ab initio database of adsorption energies on transition-metal surfaces", "creators": [{"person_or_org": {"type": "personal", "name": "Raman, Deepak", "given_name": "Deepak", "family_name": "Raman"}, "affiliations": [{"name": "Department of Chemical Engineering, Meridian Institute of Technology, Chennai 600036, India"}]}, {"person_or_org": {"type": "personal", "name": "Okafor, Chidi", "given_name": "Chidi", "family_name": "Okafor"}, "affiliations": [{"name": "Centre for Computational Chemistry, Meridian Institute of Technology, Chennai 600036, India"}]}], "description": "<p>We present a database of adsorption energies for 24 small molecules and reaction intermediates on the low-index facets of 18 transition metals, computed with density-functional theory at consistent numerical settings. The database covers 8,640 adsorption geometries including all symmetry-distinct sites, and we benchmark three exchange-correlation functionals against available experimental data. The dataset contains every relaxed geometry, the total energies and electronic structure outputs of all calculations, and scripts to query the database.</p>", "subjects": [{"subject": "adsorption"}, {"subject": "catalysis"}, {"subject": "density-functional theory"}, {"subject": "database"}], "funding": []}, "custom_fields": {"mc_references": [{"ref_resource_type": "publication-article", "ref_citation": "D. Raman, C. Okafor, A consistent ab initio database of adsorption on transition-metal surfaces, ACS Catalysis 16, 4411 (2026), 10.1021/acscatal.6c00821"}]}, "pids": {"doi": {"identifier": "10.24435/materialscloud:d5-c5", "provider": "datacite"}, "mcid": {"identifier": "2026.144", "provider": "mcid"}}, "files": {"enabled": true, "count": 4, "entries": {"README.md": {"size": 6120, "mimetype": "text/markdown", "ext": "md"}, "dft_calculations.tar.gz": {"size": 29000000000, "mimetype": "application/gzip", "ext": "gz"}, "relaxed_structures.tar.gz": {"size": 5200000000, "mimetype": "application/gzip", "ext": "gz"}, "query_scripts.zip": {"size": 140233, "mimetype": "application/zip", "ext": "zip"}}}},
+ "experimental": {"metadata": {"resource_type": {"id": "dataset", "title": {"en": "Dataset"}}, "title": "Scanning tunneling microscopy of pentacene monolayers on Cu(111)", "creators": [{"person_or_org": {"type": "personal", "name": "Aliyeva, Nigar", "given_name": "Nigar", "family_name": "Aliyeva"}, "affiliations": [{"name": "Institute of Experimental Physics, University of Innsbruck, Technikerstrasse 25, 6020 Innsbruck, Austria"}]}], "description": "<p>We report scanning tunneling microscopy and atomic force microscopy measurements of pentacene monolayers grown on Cu(111) under ultra-high vacuum. Images acquired at 4 K resolve the molecular orbital structure and reveal two coexisting ordered phases. Raw scans for all imaging conditions are included.</p>", "subjects": [{"subject": "scanning tunneling microscopy"}, {"subject": "pentacene"}, {"subject": "surface science"}], "funding": []}, "custom_fields": {"mc_references": [{"ref_resource_type": "publication-article", "ref_citation": "N. Aliyeva, Ordered phases of pentacene on Cu(111) imaged at 4 K, Surface Science 748, 122601 (2026), 10.1016/j.susc.2026.122601"}]}, "pids": {"doi": {"identifier": "10.24435/materialscloud:d6-c6", "provider": "datacite"}, "mcid": {"identifier": "2026.145", "provider": "mcid"}}, "files": {"enabled": true, "count": 3, "entries": {"scan01_phase_a.sxm": {"size": 2411008, "mimetype": "application/octet-stream", "ext": "sxm"}, "scan02_phase_b.sxm": {"size": 2398112, "mimetype": "application/octet-stream", "ext": "sxm"}, "spectra_overview.png": {"size": 1822144, "mimetype": "image/png", "ext": "png"}}}}
+};
+const CANNED_PREPRINT_LINK='- Could you please provide a link (DOI or URL) to the preprint? Once your paper is published, you will be able to update the reference.';
+CANNED.ref7=CANNED_PREPRINT_LINK;
+const LABEL={t1:'Title is title-cased',t2:'Title contains the word "dataset"',t3:'Title is not paper-like',
+a1:'Authors may be incomplete',af1:'Affiliation has manual numbering',af2:'Affiliation has no full address',
+af3:'Author has no affiliation',d3:'Description is not an abstract',d6:'Description is too short',
+d7:'Description does not start with a capital',d8:'Description has no full stop',d9:'Description is not abstract-like',
+k1:'Fewer than three keywords',rt1:'Resource type does not match the files',
+ref2:'Reference is missing or incomplete',ref4:'DOI is not in the 10. format',ref7:'Preprint has no DOI or URL',
+f1:'No README or files_description',f7:'File format is not open',f8:'README has no previewable extension',
+SIZE:'Over the size limit'};
+const label=k=>LABEL[k]||k;
+const SCOPES=[['r4','ask: mainly experimental, or also computational?'],['r2','appears mainly experimental'],['r1','out of scope, suggest Zenodo'],['r3','formal decline']];
+const AI_ENABLED=false;
+
+function affiliationName(a){return(a.name||'').trim().replace(/\s+/g,' ').toLowerCase()}
+function affiliationRorIndex(creators){
+  const known=new Map();
+  creators.forEach(c=>(c.affiliations||[]).forEach(a=>{
+    const name=affiliationName(a);
+    if(name&&typeof a.id==='string'&&a.id.trim()){
+      if(!known.has(name))known.set(name,new Set());
+      known.get(name).add(a.id.trim());
+    }
+  }));
+  return known;
+}
+function affiliationRors(creators){
+  const known=affiliationRorIndex(creators);
+  return creators.map(c=>(c.affiliations||[]).map(a=>{
+    const matches=known.get(affiliationName(a)),id=typeof a.id==='string'?a.id.trim():'';
+    return id||(matches&&matches.size===1?[...matches][0]:null);
+  }));
+}
+
+function referenceHasLink(reference,citation){
+  const structured=['ref_link','ref_doi','doi','url'].map(k=>String(reference[k]||'')).join(' ');
+  return /\b(?:https?:\/\/|www\.)\S+/i.test(citation)||/(^|[^\w.])10\.\d{4,9}\/\S+/i.test(citation)||
+    /\b(?:https?:\/\/|www\.)\S+/i.test(structured)||/(^|[^\w.])10\.\d{4,9}\/\S+/i.test(structured);
+}
+function isPreprintReference(reference,citation){
+  return /\b(?:pre[\s-]?print|arxiv)\b/i.test(citation)||String(reference.ref_resource_type||'').toLowerCase().includes('preprint');
+}
+function isThinReference(reference,citation){
+  const comment=String(reference.ref_comment||'');
+  if(referenceHasLink(reference,citation))return false;
+  return (citation+' '+comment).trim().split(/\s+/).filter(Boolean).length<5;
+}
+
+function rules(rec){
+  const md=rec.metadata||{},f=[],add=(k,d)=>f.push({key:k,detail:d||''});
+  const title=md.title||'',words=title.match(/[A-Za-z][A-Za-z'-]*/g)||[];
+  if(words.length>3&&words.slice(1).filter(w=>/[A-Z]/.test(w[0])).length>=Math.max(2,Math.floor(0.6*(words.length-1))))add('t1',title);
+  if(/\bdata ?set\b/i.test(title))add('t2',title);
+  if(words.length<4)add('t3',title);
+  const rors=affiliationRors(md.creators||[]);
+  const knownRors=affiliationRorIndex(md.creators||[]),conflicts=new Set(),addressFindings=new Map(),affiliationReviews=[];
+  (md.creators||[]).forEach((c,i)=>{const nm=(c.person_or_org||{}).name||'?',affs=c.affiliations||[];
+    if(!affs.length){add('af3','no affiliation for '+nm);return}
+    affs.forEach((a,j)=>{const institution=affiliationName(a),t=a.name||'';
+      if((knownRors.get(institution)||new Set()).size>1){
+        if(!conflicts.has(institution)){
+          conflicts.add(institution);
+          affiliationReviews.push('conflicting ROR identifiers for '+t+'. Verify the institution before requesting affiliation changes.');
+        }
+        return;
+      }
+      if(rors[i][j])return;
+      if(/^\s*\d+[.)]/.test(t))add('af1',t);
+      if((t.match(/,/g)||[]).length<2){
+        if(!addressFindings.has(institution))addressFindings.set(institution,{name:t,authors:new Set()});
+        addressFindings.get(institution).authors.add(nm);
+      }})});
+  addressFindings.forEach(item=>add('af2',[...item.authors].join(', ')+': '+item.name+' - no ROR supplied or shared; check whether the affiliation includes a full address'));
+  const desc=(md.description||'').replace(/<[^>]+>/g,' ')
+    .replace(/(?:&nbsp;|&#160;|&#x0*a0;)/gi,' ').replace(/\s+/g,' ').trim();
+  if(!desc)add('d3','no description');
+  else{if(/[a-z]/.test(desc[0]))add('d7',desc.slice(0,50));
+    if(!desc.endsWith('.'))add('d8',desc.slice(-40));
+    if(desc.split(/\s+/).length<60)add('d6',desc.split(/\s+/).length+' words')}
+  if((md.subjects||[]).length<3)add('k1',(md.subjects||[]).length+' keywords');
+  const ent=(rec.files||{}).entries||{},names=Object.keys(ent);
+  if((md.resource_type||{}).id==='software'&&!names.some(n=>['.py','.sh','.ipynb'].includes(extOf(n)))){
+    const archives=names.filter(n=>['.zip','.tar.gz','.tar.bz2'].includes(extOf(n)));
+    if(archives.length)affiliationReviews.push('Software is selected and the code may be inside an archive. Inspect the README/archive before requesting a resource-type change.');
+    else add('rt1','resource_type=software but no visible code files or archives');
+  }
+  const refs=((rec.custom_fields||{}).mc_references)||[];
+  if(!refs.length)add('ref2','no reference at all');
+  refs.forEach(r=>{const c=r.ref_citation||'';
+    if(/doi\.org/.test(c))add('ref4',c);
+    if(isPreprintReference(r,c)&&!referenceHasLink(r,c))add('ref7','preprint reference has no DOI or URL: '+c);
+    if(isThinReference(r,c))add('ref2','reference too thin: '+c)});
+  const doi=(((rec.pids||{}).doi)||{}).identifier||'';
+  if(doi&&!doi.startsWith('10.'))add('ref4','record DOI: '+doi);
+  const low=names.map(n=>n.toLowerCase());
+  const readme=low.filter(n=>n.startsWith('readme')||n==='files_description.md');
+  if(!readme.length)add('f1','no README.md/.txt or files_description.md');
+  else if(!['.md','.txt'].includes(extOf(readme[0])))add('f8',readme[0]+' has no previewable extension');
+  const aiida=names.some(n=>extOf(n)==='.aiida'),budget=aiida?50e9:5e9;
+  const total=names.reduce((s,n)=>s+(ent[n].size||0),0);
+  if(total>budget)f.push({key:'SIZE',detail:(total/1e9).toFixed(1)+' GB exceeds the '+(budget/1e9)+' GB limit'});
+  const eyeball=affiliationReviews;
+  names.forEach(n=>{const e=extOf(n);
+    if(BLOCKED[e])f.push({key:'f7',detail:n+': '+BLOCKED[e]});
+    else if(e==='.pdf')eyeball.push(n+' - confirm it does not reproduce text from an unpublished paper.');
+    else if(CASE.includes(e))eyeball.push(n+' - format is case-by-case.');
+    else if(e&&e!=='.xlsx'&&!OPEN.includes(e))eyeball.push('Unknown extension '+e+' ('+n+').')});
+  const funders=(md.funding||[]).map(x=>{const nm=((x.funder||{}).name||'').trim(),a=((x.award||{}).acronym)||'';
+    return a&&!nm.includes(a)?nm+' ('+a+')':nm}).filter(Boolean);
+  const waiver=WAIVERS.some(w=>funders.join(' ').toUpperCase().includes(w.toUpperCase()));
+  return{findings:f,eyeball,total,aiida,funders,waiver,title}}
+
+function verdict(rec){
+  const r=rules(rec),size=r.findings.some(x=>x.key==='SIZE');
+  let status,headline,note;
+  if(size&&r.waiver){status='warn';headline='Over the size limit, but the funder covers it';
+    note='Funded by '+r.funders.join(', ')+' - accept as an exception, and say so in the comment.'}
+  else if(size){status='stop';headline='Over the size limit, with no covered funder';
+    note='Ask them to shrink it, or escalate before deciding.'}
+  else if(r.findings.length){status='changes';
+    headline=r.findings.length+' finding'+(r.findings.length>1?'s':'')+' to review';
+    note='Verify the evidence before copying the draft feedback. Nothing has been sent.'}
+  else if(r.eyeball.length){status='warn';
+    headline='No automatic changes - '+r.eyeball.length+' human check'+(r.eyeball.length>1?'s':'');
+    note='Resolve the review questions before deciding whether feedback is needed.'}
+  else{status='ok';headline='Looks good';
+    note='Confirm the work is computational materials science, then accept in the web UI.'}
+  const seen=new Set(),msg=[];
+  r.findings.forEach(x=>{if(x.key!=='SIZE'&&CANNED[x.key]&&!seen.has(x.key)){seen.add(x.key);msg.push(CANNED[x.key])}});
+  return{status,headline,note,title:r.title,gb:+(r.total/1e9).toFixed(2),aiida:r.aiida,waiver:r.waiver,
+    funders:r.funders,findings:r.findings,eyeball:r.eyeball,message:msg.join('\n')}}
+
+
+function human(b){if(b>=1e9)return (b/1e9).toFixed(b>=99.5e8?0:1)+' GB';if(b>=1e6)return Math.round(b/1e6)+' MB';if(b>=1e3)return Math.round(b/1e3)+' KB';return b+' B'}
+function fmtStatus(name){const e=extOf(name);
+  if(BLOCKED[e])return{c:'badf',t:'not open'};
+  if(e==='.pdf')return{c:'chk',t:'check'};
+  if(CASE.includes(e))return{c:'chk',t:'case-by-case'};
+  if(e==='.xlsx')return{c:'okf',t:'tolerated'};
+  if(OPEN.includes(e))return{c:'okf',t:'open'};
+  return{c:'chk',t:e?'unknown':'no ext'}}
+
+function recordHTML(rec,d){
+  const md=rec.metadata||{},ent=(rec.files||{}).entries||{},names=Object.keys(ent);
+  const rt=((md.resource_type||{}).title||{}).en||(md.resource_type||{}).id||'record';
+  const mcid=(((rec.pids||{}).mcid)||{}).identifier,doi=(((rec.pids||{}).doi)||{}).identifier;
+  const created=(rec.created||'').slice(0,10);
+  let h='<div class="badges">';
+  if(rec.is_published!==true)h+='<span class="badge b-draft">Draft</span>';
+  h+='<span class="badge b-type" data-f="rtype">'+esc(rt)+'</span>';
+  if(mcid)h+='<span class="badge b-id">'+esc(mcid)+'</span>';
+  if(doi)h+='<span class="badge b-doi" data-f="doi">DOI '+esc(doi)+'</span>';
+  if(created)h+='<span class="badge b-date">submitted '+esc(created)+'</span>';
+  h+='</div><h2 class="rtitle" data-f="title">'+esc(md.title||'(untitled)')+'</h2>';
+  const rors=affiliationRors(md.creators||[]);
+  h+='<div class="authors" data-f="authors">'+(md.creators||[]).map((c,i)=>{
+    const nm=(c.person_or_org||{}).name||'?';
+    const affs=(c.affiliations||[]).map((a,j)=>'<div class="aff" data-f="aff-'+i+'-'+j+'">'
+      +esc(a.name||'')+(rors[i][j]?' <span class="ror">'+(typeof a.id==='string'&&a.id.trim()?'ROR':'ROR · shared')+'</span>':'')+'</div>').join('');
+    return '<div class="author" data-f="author-'+i+'"><span class="aname">'+esc(nm)+'</span>'
+      +(affs||'<div class="aff none">no affiliation given</div>')+'</div>'}).join('')+'</div>';
+  const desc=String(md.description||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  h+='<h3 class="sec">Description</h3><p class="desc" data-f="desc">'+(desc?esc(desc):'<span class="none">none</span>')+'</p>';
+  h+='<h3 class="sec">Keywords</h3><div class="kws" data-f="keywords">'
+    +((md.subjects||[]).map(s=>'<span class="kw">'+esc(s.subject||'')+'</span>').join('')||'<span class="none">none</span>')+'</div>';
+  const funds=(md.funding||[]).map(x=>{const n=((x.funder||{}).name||'').trim(),a=((x.award||{}).acronym)||'';
+    return a&&!n.includes(a)?n+' ('+a+')':n}).filter(Boolean);
+  h+='<h3 class="sec">Funding</h3><div class="fund">'+(funds.length?esc(funds.join(' · ')):'<span class="none">none declared</span>')
+    +(d.waiver?' <span class="badge b-ok">covered funder - size waiver</span>':'')+'</div>';
+  const refs=((rec.custom_fields||{}).mc_references)||[];
+  h+='<h3 class="sec">References</h3>'+(refs.length
+    ?'<ul class="refs" data-f="refs">'+refs.map((r,i)=>'<li data-f="ref-'+i+'">'+esc(r.ref_citation||'')+'</li>').join('')+'</ul>'
+    :'<div class="none" data-f="refs">no reference given</div>');
+  const total=names.reduce((s,n)=>s+(ent[n].size||0),0);
+  const aiida=names.some(n=>extOf(n)==='.aiida'),budget=aiida?50e9:5e9;
+  const pct=Math.min(100,total/budget*100);
+  h+='<h3 class="sec" data-f="files">Files<span class="seccount">'+names.length+'</span></h3><div>';
+  h+=names.length?'<table class="files"><tr><th>filename</th><th style="text-align:right">size</th><th>format</th></tr>'
+    +names.map((n,i)=>{const f=fmtStatus(n);
+      return '<tr data-f="file-'+i+'"><td class="fn">'+esc(n)+'</td><td class="fs">'+human(ent[n].size||0)
+        +'</td><td><span class="fmt '+f.c+'">'+f.t+'</span></td></tr>'}).join('')+'</table>'
+    :'<div class="none">no files</div>';
+  h+='<div class="sizebox" data-f="size"><div class="sizebar'+(total>budget?' over':'')
+    +'"><i style="width:'+pct.toFixed(1)+'%"></i></div><span class="sizetxt">'
+    +(total/1e9).toFixed(2)+' GB of '+(budget/1e9)+' GB '+(aiida?'AiiDA ':'')+'budget</span></div></div>';
+  return h}
+
+function targetSel(f,rec){
+  const k=f.key,det=f.detail||'',md=rec.metadata||{};
+  if(k==='t1'||k==='t2'||k==='t3')return '[data-f=title]';
+  if(k==='rt1')return '[data-f=rtype]';
+  if(k[0]==='d')return '[data-f=desc]';
+  if(k==='k1')return '[data-f=keywords]';
+  if(k==='af1'||k==='af2'||k==='af3'){
+    const cs=md.creators||[];
+    for(let i=0;i<cs.length;i++){
+      const nm=(cs[i].person_or_org||{}).name||'',affs=cs[i].affiliations||[];
+      for(let j=0;j<affs.length;j++){const t=affs[j].name||'';if(t&&det.indexOf(t)>-1)return '[data-f="aff-'+i+'-'+j+'"]'}
+      if(nm&&det.indexOf(nm)>-1)return '[data-f="author-'+i+'"]'}
+    return '[data-f=authors]'}
+  if(k.slice(0,3)==='ref'){
+    if(det.indexOf('record DOI')>-1)return '[data-f=doi]';
+    const refs=((rec.custom_fields||{}).mc_references)||[];
+    for(let i=0;i<refs.length;i++){const c=refs[i].ref_citation||'';
+      if(c&&det.indexOf(c.slice(0,50))>-1)return '[data-f="ref-'+i+'"]'}
+    return '[data-f=refs]'}
+  if(k==='SIZE')return '[data-f=size]';
+  if(k==='f7'){
+    const names=Object.keys((rec.files||{}).entries||{});
+    for(let i=0;i<names.length;i++)if(det.indexOf(names[i])===0)return '[data-f="file-'+i+'"]';
+  }
+  return '[data-f=files]'}
+
+function eyeTarget(txt,rec){
+  const names=Object.keys((rec.files||{}).entries||{});
+  for(let i=0;i<names.length;i++)if(txt.indexOf(names[i])>-1)return '[data-f="file-'+i+'"]';
+  return '[data-f=files]'}
+
+function replyHTML(d){
+  if(d.message)
+    return '<div class="bubble"><div class="bhead"><span class="avatar">MC</span>Materials Cloud moderation'
+      +'<span class="draftpill">DRAFT</span></div><div class="btext">'+esc(d.message)+'</div></div>'
+      +'<button class="copy" id="cp">Copy reply</button>';
+  const t=d.status==='ok'?'Nothing to request. Confirm the work is computational materials science, then accept in the Archive web UI.'
+    :d.status==='warn'?'Nothing to request. Accept as an exception in the Archive web UI, and mention the funder waiver in the comment.'
+    :'Nothing to send yet - over budget with no covered funder. Escalate before deciding.';
+  return '<div class="reply-none '+d.status+'">'+esc(t)+'</div>'}
+
+function wireReply(d){
+  const cp=$('#cp');
+  if(cp)cp.onclick=async()=>{await navigator.clipboard.writeText(d.message);
+    cp.textContent='Copied';setTimeout(()=>cp.textContent='Copy reply',1600)}}
+
+function panelHTML(d,tmap,emap){
+  let h='';
+  if(d.findings.length)
+    h+='<div class="pcard"><h3>What is wrong<span class="count">'+d.findings.length+'</span></h3><ul class="flist">'
+      +d.findings.map((f,i)=>'<li data-sel="'+esc(tmap[i])+'"><span class="jump">&rarr;</span><b>'+esc(f.key)+'</b>'
+        +esc(label(f.key))+(f.detail?'<small>'+esc(f.detail)+'</small>':'')+'</li>').join('')+'</ul></div>';
+  if(d.eyeball.length)
+    h+='<div class="pcard"><h3>Check yourself<span class="count amber">'+d.eyeball.length+'</span></h3><ul class="flist amber">'
+      +d.eyeball.map((t,i)=>'<li data-sel="'+esc(emap[i])+'"><span class="jump">&rarr;</span>'+esc(t)+'</li>').join('')+'</ul></div>';
+  h+='<div class="pcard"><h3>Draft reply to the submitter</h3><div id="replybox">'+replyHTML(d)+'</div>';
+  h+='<p class="fine">Every sentence comes verbatim from the approved canned replies. Scope is a human judgement - this page never posts, accepts, or declines.'
+    +(AI_ENABLED?'':' AI review runs in the served app: <b>python3 app/serve.py</b>.')+'</p>';
+  h+='<details class="scope"><summary>Scope replies - human judgement only</summary>'
+    +SCOPES.map(s=>'<div class="scoperow"><span><b>'+esc(s[0])+'</b> '+esc(s[1])+'</span>'
+      +'<button data-copy="'+esc(CANNED[s[0]]||'')+'">copy</button></div>').join('')+'</details></div>';
+  if(AI_ENABLED)
+    h+='<div class="pcard"><h3>AI review</h3><div id="aiout"></div></div>';
+  return h}
+
+let AISEQ=0;
+async function aiReview(){
+  if(!CUR)return;
+  const my=++AISEQ,d0=CUR.d;
+  const box=$('#aiout');
+  box.innerHTML='<div class="aiwait">Reviewing scope and description&hellip; runs locally, typically 15&ndash;60&nbsp;s.</div>'
+    +'<p class="fine">Advisory notes for the moderator; any reply lines it proposes are canned, verbatim.</p>';
+  let r,j;
+  try{
+    r=await fetch('/ai',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({record:CUR.rec,found:CUR.d.findings.map(f=>f.key)})});
+    j=await r.json();
+  }catch(e){if(my===AISEQ)box.innerHTML='<div class="err" style="font-size:12.5px">Could not reach the server.</div>';return}
+  if(my!==AISEQ)return;
+  if(!r.ok||j.error){box.innerHTML='<div class="err" style="font-size:12.5px">'+esc(j.error||'AI review failed.')+'</div>';return}
+  const sc=j.scope||{},de=j.description||{};
+  const vcls=sc.verdict==='computational'?'okf':(sc.verdict==='experimental'?'badf':'chk');
+  let h='<div class="airow"><span class="fmt '+vcls+'">'+esc(sc.verdict||'?')+'</span> <b>scope</b> &middot; '
+    +esc(sc.confidence||'?')+' confidence<small>'+esc(sc.reason||'')+'</small></div>';
+  h+='<div class="airow"><span class="fmt '+(de.abstract_shaped?'okf':'badf')+'">'
+    +(de.abstract_shaped?'abstract-shaped':'not an abstract')+'</span> <b>description</b><small>'+esc(de.reason||'')+'</small></div>';
+  if(j.escalate)h+='<div class="reply-none stop" style="margin-top:10px">AI review suggests escalating - do not decide alone.</div>';
+  if(j.moderator_note)h+='<p class="fine">'+esc(j.moderator_note)+'</p>';
+  if(j.reply_lines&&j.reply_lines.length){
+    const lines=j.reply_lines.map(l=>l.text).join('\n');
+    d0.message=d0.message?d0.message+'\n'+lines:lines;
+    if(d0===CUR.d){$('#replybox').innerHTML=replyHTML(d0);wireReply(d0)}
+    h+='<div class="aisec">Added to the draft reply (canned)</div>'
+      +j.reply_lines.map(l=>'<div class="scoperow"><span><b>'+esc(l.key)+'</b> '+esc(l.text)+'</span></div>').join('')}
+  if(j.scope_reply)
+    h+='<div class="aisec">Scope reply (canned '+esc(j.scope_reply.key)+') - if you agree, it replaces the fixes reply</div>'
+      +'<div class="bubble" style="margin-top:6px"><div class="btext" style="max-height:180px">'+esc(j.scope_reply.text)+'</div></div>'
+      +'<button class="copy" id="aiscopecopy">Copy scope reply</button>';
+  h+='<p class="fine">Advisory notes for the moderator; reply lines are canned, verbatim.</p>';
+  box.innerHTML=h;
+  const scb=$('#aiscopecopy');
+  if(scb)scb.onclick=async()=>{await navigator.clipboard.writeText(j.scope_reply.text);
+    scb.textContent='Copied';setTimeout(()=>scb.textContent='Copy scope reply',1600)}}
+
+let CUR=null;
+function render(d,rec){
+  rec=rec||{};
+  CUR={d,rec};
+  const tmap=d.findings.map(f=>targetSel(f,rec));
+  const emap=d.eyeball.map(t=>eyeTarget(t,rec));
+  $('#out').innerHTML='<div class="banner '+d.status+'"><h2>'+esc(d.headline)+'</h2><p>'+esc(d.note)+'</p></div>'
+    +'<div class="cols"><section class="recview">'+recordHTML(rec,d)+'</section>'
+    +'<aside class="panel">'+panelHTML(d,tmap,emap)+'</aside></div>';
+  d.findings.forEach((f,i)=>mark(tmap[i],label(f.key),CANNED[f.key]||f.detail||'','red'));
+  d.eyeball.forEach((t,i)=>mark(emap[i],'check',t,'amber'));
+  document.querySelectorAll('.panel .pcard').forEach((el,i)=>el.style.animationDelay=(.1+i*.07)+'s');
+  document.querySelectorAll('.flist li[data-sel]').forEach(li=>li.onclick=()=>{
+    const el=document.querySelector(li.dataset.sel);if(!el)return;
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+    el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')});
+  wireReply(d);
+  if(AI_ENABLED)aiReview();
+  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{
+    await navigator.clipboard.writeText(b.dataset.copy);
+    b.textContent='copied';setTimeout(()=>b.textContent='copy',1500)})}
+
+function mark(sel,txt,tip,lvl){
+  const el=sel&&document.querySelector(sel);if(!el)return;
+  el.classList.add(lvl==='amber'?'flag-amber':'flag-red');
+  if(el.dataset.f==='title'&&lvl==='red')el.classList.add('squig');
+  const m=document.createElement('span');m.className='mark '+lvl;m.textContent=txt;
+  m.title=String(tip).replace(/^- /,'');
+  (el.tagName==='TR'?el.cells[0]:el).appendChild(m)}
+
+
+async function runCheck(){
+  const t=$('#in').value.trim();
+  if(!t){$('#in').focus();return}
+  $('#clear').hidden=false;
+  let rec=null;
+  if(t.startsWith('{')){
+    try{rec=JSON.parse(t)}catch(e){return fail('That looks like JSON but it will not parse. Check for a missing brace or comma.')}
+  }else{
+    const m=t.match(/\/records?\/([A-Za-z0-9-]+)/),id=m?m[1]:t;
+    $('#out').innerHTML='<div class="spin">Fetching '+esc(id)+'…</div>';
+    try{
+      const r=await fetch('https://archive.materialscloud.org/api/records/'+encodeURIComponent(id),{headers:{Accept:'application/json'}});
+      if(!r.ok)throw 0;
+      rec=await r.json();
+    }catch(e){
+      return fail('Could not fetch that record from this page. Drafts need a moderator login, and browsers block cross-site requests from a local file. Open the record, copy its JSON, and paste it here - or run <code>python3 app/serve.py</code>, which can fetch for you.')}
+  }
+  if(!rec||!rec.metadata)return fail('That JSON has no metadata block, so it is not an Archive record.');
+  render(verdict(rec),rec)}
+const fail=m=>{$('#out').innerHTML='<div class="err">'+m+'</div>'};
+
+
+const EMPTY='<div class="empty">Pick an example above, or paste a record and press Check.</div>';
+$('#out').innerHTML=EMPTY;
+$('#go').onclick=runCheck;
+$('#clear').onclick=()=>{$('#in').value='';$('#out').innerHTML=EMPTY;$('#clear').hidden=true;$('#in').focus()};
+$('#in').addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter')runCheck()});
+document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{
+  $('#in').value=JSON.stringify(EXAMPLES[b.dataset.ex],null,1);runCheck()});
+const _q=new URLSearchParams(location.search).get('ex');
+if(_q&&EXAMPLES[_q]){$('#in').value=JSON.stringify(EXAMPLES[_q],null,1);runCheck()}
+else $('#in').focus();
+
+</script>

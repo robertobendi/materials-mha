@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "resource_type": {
+      "id": "dataset",
+      "title": {
+        "en": "Dataset"
+      }
+    },
+    "title": "Crystallization kinetics of Ge-rich phase-change alloys from machine-learning molecular dynamics",
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Marchetti, Paolo",
+          "given_name": "Paolo",
+          "family_name": "Marchetti"
+        },
+        "affiliations": [
+          {
+            "name": "Department of Materials Science, University of Milano-Bicocca, via R. Cozzi 55, 20125 Milano, Italy"
+          }
+        ]
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Nguyen, Thanh",
+          "given_name": "Thanh",
+          "family_name": "Nguyen"
+        },
+        "affiliations": [
+          {
+            "id": "02s376052",
+            "name": "École Polytechnique Fédérale de Lausanne"
+          }
+        ]
+      }
+    ],
+    "description": "<p>We study the phase separation and crystallization kinetics of Ge-rich GeSbTe alloys by molecular dynamics simulations with a machine-learning interatomic potential trained on density-functional theory data. Large-scale simulations with up to 32,000 atoms over tens of nanoseconds reveal a two-step mechanism in which segregation of excess germanium precedes the nucleation of the crystalline phase. The dataset contains the full training database, the fitted potential, and the complete molecular dynamics trajectories analysed in the accompanying publication.</p>",
+    "subjects": [
+      {
+        "subject": "phase-change materials"
+      },
+      {
+        "subject": "machine learning"
+      },
+      {
+        "subject": "molecular dynamics"
+      },
+      {
+        "subject": "crystallization"
+      }
+    ],
+    "funding": [
+      {
+        "funder": {
+          "id": "00vvxbe27",
+          "name": "NCCR MARVEL"
+        },
+        "award": {
+          "acronym": "MARVEL/P1",
+          "number": "p1"
+        }
+      }
+    ]
+  },
+  "custom_fields": {
+    "mc_references": [
+      {
+        "ref_resource_type": "publication-article",
+        "ref_citation": "P. Marchetti, T. Nguyen, Two-step crystallization of Ge-rich GeSbTe alloys from machine-learning molecular dynamics, Journal of Materials Chemistry C 14, 2210 (2026), 10.1039/D6TC00412K"
+      }
+    ]
+  },
+  "pids": {
+    "doi": {
+      "identifier": "10.24435/materialscloud:d4-c4",
+      "provider": "datacite"
+    },
+    "mcid": {
+      "identifier": "2026.143",
+      "provider": "mcid"
+    }
+  },
+  "files": {
+    "enabled": true,
+    "count": 4,
+    "entries": {
+      "README.md": {
+        "size": 2411,
+        "mimetype": "text/markdown",
+        "ext": "md"
+      },
+      "training_database.tar.gz": {
+        "size": 18000000000,
+        "mimetype": "application/gzip",
+        "ext": "gz"
+      },
+      "trajectories.tar.gz": {
+        "size": 10500000000,
+        "mimetype": "application/gzip",
+        "ext": "gz"
+      },
+      "potential.zip": {
+        "size": 8553846,
+        "mimetype": "application/zip",
+        "ext": "zip"
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "calibrated_at": "2026-09-11",
+  "source": {
+    "moderator": "Francesca Olgiati",
+    "moderator_user_id": "1965",
+    "attribution": "Inferred from the official 2025-present moderator listing and the dominant accepting moderator in the recent request sample.",
+    "sampled_requests": 200,
+    "sampled_comments": 168,
+    "accepted_decisions_calibrated": 99,
+    "storage": "Aggregated guidance only; no private record text or conversation corpus is stored."
+  },
+  "principles": [
+    "Open with a short thank-you for the submission or for the author's latest message.",
+    "Bundle all requested changes into one reply and group them under field headings.",
+    "Use a polite direct request and explain the reason only when it helps the author act.",
+    "Ask the author to reply in the Conversation area after making changes.",
+    "For follow-ups, acknowledge completed changes before naming anything still missing.",
+    "When scope is uncertain, ask for clarification before performing the full metadata review.",
+    "Do not chase authors with reminders; wait for their reply.",
+    "Treat PDF/A as a preference, not a publication blocker.",
+    "Ask for README.md, README.txt, or files_description.md alongside uploaded archives, not only inside them.",
+    "Handle a DOI written as a URL as a moderator-side metadata edit; do not ask the author to make that trivial correction.",
+    "Keep final accept, decline, and metadata-edit decisions human-controlled."
+  ],
+  "moderator_only_finding_keys": [
+    "ref4"
+  ],
+  "calibration": {
+    "method": "GET-only comparison with records accepted by moderator user 1965; aggregate results only.",
+    "accepted_records": 99,
+    "moderator_comments": 84,
+    "schema_corrections": [
+      "Use structured ref_link, DOI, URL, and ref_comment fields when reviewing references.",
+      "Decode HTML entities before checking the visible end punctuation of descriptions.",
+      "Treat software packaged in an archive as a human file-inspection question, not an automatic resource-type error."
+    ],
+    "caveat": "Past acceptance is evidence, not an automatic approval label; scientific scope, file contents, exceptions, and every final decision still require a moderator."
+  },
+  "templates": {
+    "first_review_opening": "Thank you for your submission to the Materials Cloud Archive.\n\nBefore we can publish your record, I kindly ask you to make some small changes.",
+    "follow_up_opening": "Thank you for your message and for the changes you made.",
+    "changes_closing": "Please let me know once these changes are complete (you can reply directly in the Conversation area), and we will proceed with publishing the record.\n\nThank you.\nBest regards",
+    "clarification_opening": "Thank you for your submission to the Materials Cloud Archive.\n\nBefore reviewing your submission, we would like to ask for some additional information.",
+    "short_closing": "Thank you.\nBest regards"
+  },
+  "section_order": [
+    "Title",
+    "Authors",
+    "Affiliations",
+    "Description",
+    "Files",
+    "References",
+    "Keywords",
+    "Resource type",
+    "Licenses",
+    "Materials Cloud sections",
+    "Other"
+  ]
+}

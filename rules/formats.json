@@ -1,0 +1,35 @@
+{
+  "_source": "Google Sheet 'Materials Cloud Archive File Formats' (link utili.pdf)",
+  "max_bytes": 5000000000,
+  "max_bytes_aiida": 50000000000,
+  "readme_names": ["readme.md", "readme.txt", "files_description.md"],
+  "readme_preview_exts": [".md", ".txt"],
+  "open": [
+    ".aiida", ".tar.gz", ".tgz", ".zip", ".gz", ".bz2", ".csv", ".tsv", ".txt",
+    ".yaml", ".yml", ".xml", ".xsd", ".json", ".hdf", ".h4", ".hdf4", ".he2",
+    ".h5", ".hdf5", ".he5", ".cif", ".xyz", ".xsf", ".mif", ".win", ".wout",
+    ".inp", ".out", ".in", ".dat", ".db", ".bson", ".mongo", ".ipynb", ".npy",
+    ".py", ".sh", ".itx", ".vesta", ".md", ".png", ".tif", ".tiff", ".jpg", ".svg"
+  ],
+  "tolerated": {
+    ".pdf": "Accepted. Check it is not reproducing text from an unpublished paper (copyright).",
+    ".xlsx": "Accepted, though CSV is preferred."
+  },
+  "case_by_case": {
+    ".pkl": "Not recommended (arbitrary code execution, python-specific). Accept only if converting is not worth the effort.",
+    ".pickle": "See .pkl",
+    ".eps": "Unclear if open format; widespread, accept.",
+    ".agr": "XMGrace, unclear."
+  },
+  "blocked": {
+    ".rar": "Not an open format. Ask for .zip / .7z / .tar.gz.",
+    ".mat": "Matlab, proprietary and undocumented. Ask for compressed CSV or HDF5.",
+    ".m": "Matlab. Ask for an open alternative.",
+    ".opj": "Origin project file. Ask for CSV.",
+    ".opju": "Origin project file. Ask for CSV.",
+    ".sxm": "Image SXM, closed source, Mac-only.",
+    ".pyc": "Compiled bytecode, not a data format, unnecessary."
+  },
+  "aiida_markers": [".aiida"],
+  "waiver_funders": ["MARVEL", "NCCR MARVEL", "SNSF", "ERC", "CSCS", "EPFL"]
+}
