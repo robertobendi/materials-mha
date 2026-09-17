@@ -26,8 +26,8 @@ for q in queue:
     res = deterministic.check(rec, entries)
     d = os.path.join(outdir, rid)
     os.makedirs(d, exist_ok=True)
-    json.dump(rec, open(f"{d}/record.json", "w"), indent=2, ensure_ascii=False)
-    json.dump(res, open(f"{d}/findings.json", "w"), indent=2, ensure_ascii=False)
+    json.dump(rec, open(f"{d}/record.json", "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+    json.dump(res, open(f"{d}/findings.json", "w", encoding="utf-8"), indent=2, ensure_ascii=False)
 
     hard = [f for f in res["findings"] if f["key"] not in ("REVIEW",)]
     soft = [f for f in res["findings"] if f["key"] == "REVIEW"]
@@ -36,7 +36,7 @@ for q in queue:
         if f["text"] not in seen:
             seen.add(f["text"]); uniq.append(f["text"])
     comment = "\n".join(uniq)
-    open(f"{d}/comment.md", "w").write(comment + "\n" if comment else "")
+    open(f"{d}/comment.md", "w", encoding="utf-8").write(comment + "\n" if comment else "")
 
     size_issue = any(f["key"] == "SIZE" for f in hard)
     if not hard and not soft:
@@ -65,5 +65,5 @@ for q in queue:
         lines += ["\n<details><summary>Draft comment</summary>\n", "```", comment, "```", "\n</details>"]
     lines.append(f"\nPost with: `python3 scripts/post_comment.py {q['id']} runs/{day}/{rid}/comment.md --confirm`\n")
 
-open(os.path.join(ROOT, "review.md"), "w").write("\n".join(lines))
+open(os.path.join(ROOT, "review.md"), "w", encoding="utf-8").write("\n".join(lines))
 print(f"{len(queue)} record(s) -> review.md and runs/{day}/")

@@ -22,12 +22,12 @@ def now():
 def load():
     if not os.path.exists(STATE):
         return {"records": {}, "requests": {}}
-    with open(STATE) as f:
+    with open(STATE, encoding="utf-8") as f:
         return json.load(f)
 
 
 def save(s):
-    with open(STATE, "w") as f:
+    with open(STATE, "w", encoding="utf-8") as f:
         json.dump(s, f, indent=2, ensure_ascii=False)
 
 

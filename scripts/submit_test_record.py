@@ -13,7 +13,7 @@ import argparse, copy, json, os, sys, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BASE = os.environ.get("MC_API_BASE", "http://127.0.0.1:8899")
-CLEAN = json.load(open(os.path.join(HERE, "..", "fixtures", "base_clean.json")))
+CLEAN = json.load(open(os.path.join(HERE, "..", "fixtures", "base_clean.json"), encoding="utf-8"))
 
 
 def mut(fn):
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         sys.exit(f"refusing to submit test records to {BASE}; point MC_API_BASE at the mock.")
 
     if a.file:
-        submit(json.load(open(a.file)), os.path.basename(a.file))
+        submit(json.load(open(a.file, encoding="utf-8")), os.path.basename(a.file))
     names = list(PRESETS) if a.all else a.presets
     for n in names:
         if n not in PRESETS:

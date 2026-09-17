@@ -257,7 +257,7 @@ class H(BaseHTTPRequestHandler):
                                     "ai": public_ai,
                                     "archive": ARCHIVE, "mock": ARCHIVE != PRODUCTION})
         if path == "/api/example":
-            with open(os.path.join(HERE, "..", "fixtures", "base_clean.json")) as file:
+            with open(os.path.join(HERE, "..", "fixtures", "base_clean.json"), encoding="utf-8") as file:
                 return self._send(200, json.load(file))
         if path == "/api/playbook":
             return self._send(200, PLAYBOOK)

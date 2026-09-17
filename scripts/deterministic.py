@@ -5,8 +5,8 @@ import json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RULES = os.path.join(HERE, "..", "rules")
-FMT = json.load(open(os.path.join(RULES, "formats.json")))
-CANNED = json.load(open(os.path.join(RULES, "canned.json")))
+FMT = json.load(open(os.path.join(RULES, "formats.json"), encoding="utf-8"))
+CANNED = json.load(open(os.path.join(RULES, "canned.json"), encoding="utf-8"))
 
 DOI_RE = re.compile(r"(?<![\w.])10\.\d{4,9}/\S+", re.I)
 URL_RE = re.compile(r"\b(?:https?://|www\.)\S+", re.I)
