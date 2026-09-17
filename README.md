@@ -60,12 +60,8 @@ $env:MC_ARCHIVE = "http://127.0.0.1:8899"
 python app\serve.py --open
 ```
 
-See `DEMO.md` for a short walkthrough of the six example submissions.
-
-The offline checker at `app/checker.html` works for pasted JSON with no server at all,
-and a copy is hosted on GitHub Pages at
-<https://robertobendi.github.io/materials-mha/app/checker.html>. Pages is static, so the
-dashboard and the guarded comment flow still need the local server.
+See `DEMO.md` for a short walkthrough of the six example submissions. The offline
+checker at `app/checker.html` still works for pasted JSON with no server at all.
 
 ## AI provider
 
