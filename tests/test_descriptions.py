@@ -25,6 +25,17 @@ class DescriptionTests(unittest.TestCase):
         record = self.record("<p>" + "This is a complete abstract sentence. " * 12 + "&nbsp;</p>")
         self.assertNotIn("d8", [finding["key"] for finding in self.findings(record)])
 
+    def test_pasted_editor_formatting_needs_human_check(self):
+        body = "This is a complete abstract sentence. " * 12
+        for description in ("<pre><span>" + body + "</span></pre>",
+                            '<p style="font-family: Courier">' + body + "</p>"):
+            with self.subTest(description=description[:20]):
+                texts = [f["text"] for f in self.findings(self.record(description))
+                         if f["key"] == "REVIEW"]
+                self.assertTrue(any("editor formatting" in text for text in texts))
+        plain = [f for f in self.findings(self.record("<p>" + body + "</p>")) if f["key"] == "REVIEW"]
+        self.assertFalse(any("editor formatting" in f["text"] for f in plain))
+
     def test_offline_checker_matches_entity_handling(self):
         record = self.record("<p>" + "This is a complete abstract sentence. " * 12 + "&#xA0;</p>")
         html = (ROOT / "app/checker.html").read_text()

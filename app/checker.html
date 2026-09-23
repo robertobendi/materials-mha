@@ -277,8 +277,9 @@ function affiliationRors(creators){
   }));
 }
 
+function linkText(v){return v&&typeof v==='object'?Object.values(v).map(linkText).join(' '):String(v||'')}
 function referenceHasLink(reference,citation){
-  const structured=['ref_link','ref_doi','doi','url'].map(k=>String(reference[k]||'')).join(' ');
+  const structured=['ref_link','ref_doi','doi','url'].map(k=>linkText(reference[k])).join(' ');
   return /\b(?:https?:\/\/|www\.)\S+/i.test(citation)||/(^|[^\w.])10\.\d{4,9}\/\S+/i.test(citation)||
     /\b(?:https?:\/\/|www\.)\S+/i.test(structured)||/(^|[^\w.])10\.\d{4,9}\/\S+/i.test(structured);
 }
@@ -316,6 +317,7 @@ function rules(rec){
         addressFindings.get(institution).authors.add(nm);
       }})});
   addressFindings.forEach(item=>add('af2',[...item.authors].join(', ')+': '+item.name+' - no ROR supplied or shared; check whether the affiliation includes a full address'));
+  if(/<(?:pre|code|tt|font)\b|font-family|style\s*=/i.test(md.description||''))affiliationReviews.push('the description carries pasted editor formatting (<pre>, <code> or an inline font), so it renders in an odd font. Ask the author to paste it again as plain text. There is no canned reply for this yet.');
   const desc=(md.description||'').replace(/<[^>]+>/g,' ')
     .replace(/(?:&nbsp;|&#160;|&#x0*a0;)/gi,' ').replace(/\s+/g,' ').trim();
   if(!desc)add('d3','no description');
@@ -331,8 +333,13 @@ function rules(rec){
   }
   const refs=((rec.custom_fields||{}).mc_references)||[];
   if(!refs.length)add('ref2','no reference at all');
+  const doiUrls=new Set();
+  refs.forEach(r=>[r.ref_citation].concat(['ref_link','ref_doi','doi','url'].map(k=>r[k])).forEach(v=>doiUrls.add(linkText(v))));
+  (md.related_identifiers||[]).forEach(x=>doiUrls.add(String(x.identifier||'')));
+  const bare=new Set();
+  doiUrls.forEach(t=>{for(const m of t.matchAll(/(?:https?:\/\/)?(?:dx\.)?doi\.org\/(10\.[^\s,;]+)/gi))bare.add(m[1].replace(/[.)]+$/,''))});
+  bare.forEach(d=>add('ref4','DOI written as a URL, change it to '+d));
   refs.forEach(r=>{const c=r.ref_citation||'';
-    if(/doi\.org/.test(c))add('ref4',c);
     if(isPreprintReference(r,c)&&!referenceHasLink(r,c))add('ref7','preprint reference has no DOI or URL: '+c);
     if(isThinReference(r,c))add('ref2','reference too thin: '+c)});
   const doi=(((rec.pids||{}).doi)||{}).identifier||'';

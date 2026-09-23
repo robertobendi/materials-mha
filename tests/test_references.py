@@ -49,6 +49,35 @@ class ReferenceTests(unittest.TestCase):
             with self.subTest(citation=citation):
                 self.assertNotIn("ref7", self.keys(citation))
 
+    def test_doi_url_in_structured_link_is_flagged_once_with_bare_doi(self):
+        record = self.record_with_reference("S. Ponc\u00e9 and X. Gonze, PRX Energy (2026)")
+        url = "https://doi.org/10.1103/zx5f-cw7t"
+        record["custom_fields"]["mc_references"][0]["ref_link"] = \
+            {"ref_scheme": "doi", "ref_identifier": url}
+        record["metadata"]["related_identifiers"] = [{"identifier": url, "scheme": "doi"}]
+        found = [f for f in self.findings(record) if f["key"] == "ref4"]
+        self.assertEqual([f["detail"] for f in found],
+                         ["DOI written as a URL, change it to 10.1103/zx5f-cw7t"])
+        self.assertNotIn("ref2", [f["key"] for f in self.findings(record)])
+
+    def test_bare_doi_in_structured_link_is_not_flagged(self):
+        record = self.record_with_reference("S. Ponc\u00e9 and X. Gonze, PRX Energy (2026)")
+        record["custom_fields"]["mc_references"][0]["ref_link"] = \
+            {"ref_scheme": "doi", "ref_identifier": "10.1103/zx5f-cw7t"}
+        self.assertNotIn("ref4", [f["key"] for f in self.findings(record)])
+
+    def test_offline_checker_reads_structured_doi_link(self):
+        record = self.record_with_reference("S. Ponc\u00e9 and X. Gonze, PRX Energy (2026)")
+        record["custom_fields"]["mc_references"][0]["ref_link"] = \
+            {"ref_scheme": "doi", "ref_identifier": "https://doi.org/10.1103/zx5f-cw7t"}
+        html = (ROOT / "app/checker.html").read_text()
+        rules = html[html.index("const CANNED="):html.index("function human(")]
+        code = rules + "\nprocess.stdout.write(JSON.stringify(verdict(" + json.dumps(record) + ")));"
+        run = subprocess.run(["node"], input=code, text=True, capture_output=True, check=True)
+        keys = [finding["key"] for finding in json.loads(run.stdout)["findings"]]
+        self.assertIn("ref4", keys)
+        self.assertNotIn("ref2", keys)
+
     def test_preprint_with_structured_archive_link_has_no_link_finding(self):
         record = self.record_with_reference(
             "A. Author, A study, arXiv preprint (2026)", "publication-preprint")

@@ -7,9 +7,13 @@ work computational. Fill those in per record and tidy comment.md before posting.
 import datetime, json, os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(HERE, "..", "app"))
 import mc_api, deterministic
+from dashboard import compose_reply, load_playbook
 
 ROOT = os.path.join(HERE, "..")
+PLAYBOOK = load_playbook(ROOT)
+MODERATOR_ONLY = set(PLAYBOOK.get("moderator_only_finding_keys", []))
 day = datetime.date.today().isoformat()
 outdir = os.path.join(ROOT, "runs", day)
 os.makedirs(outdir, exist_ok=True)
@@ -31,11 +35,8 @@ for q in queue:
 
     hard = [f for f in res["findings"] if f["key"] not in ("REVIEW",)]
     soft = [f for f in res["findings"] if f["key"] == "REVIEW"]
-    seen, uniq = set(), []
-    for f in hard:
-        if f["text"] not in seen:
-            seen.add(f["text"]); uniq.append(f["text"])
-    comment = "\n".join(uniq)
+    comment = compose_reply(hard, PLAYBOOK)
+    trivial = [f for f in hard if f["key"] in MODERATOR_ONLY]
     open(f"{d}/comment.md", "w", encoding="utf-8").write(comment + "\n" if comment else "")
 
     size_issue = any(f["key"] == "SIZE" for f in hard)
@@ -47,6 +48,8 @@ for q in queue:
         action = "**accept with exception** - over budget, but funded by " + ", ".join(res["funders"])
     elif size_issue:
         action = "**escalate** - over budget, no covered funder. Ask to shrink, or ask Giovanni."
+    elif not comment:
+        action = "**trivial fixes only** - make the edits below yourself, then decide in the web UI"
     else:
         action = "**review draft** - verify each finding before posting, do not accept"
 
@@ -55,15 +58,18 @@ for q in queue:
               f"{' · AiiDA' if res['is_aiida'] else ''}"
               f"{' · funder waiver' if res['funding_waiver'] else ''}",
               f"\nProposed action: {action}\n"]
-    if hard:
+    if len(hard) > len(trivial):
         lines.append("**Findings**\n")
-        lines += [f"- `{f['key']}` {f.get('detail') or ''}" for f in hard]
+        lines += [f"- `{f['key']}` {f.get('detail') or ''}" for f in hard if f not in trivial]
+    if trivial:
+        lines.append("\n**Trivial fixes** (edit and save in the web UI, or ask the author)\n")
+        lines += [f"- `{f['key']}` {f.get('detail') or ''}" for f in trivial]
     if soft:
         lines.append("\n**Needs your eyes**\n")
         lines += [f"- {f['text']}" for f in soft]
     if comment:
         lines += ["\n<details><summary>Draft comment</summary>\n", "```", comment, "```", "\n</details>"]
-    lines.append(f"\nPost with: `python3 scripts/post_comment.py {q['id']} runs/{day}/{rid}/comment.md --confirm`\n")
+        lines.append(f"\nPost with: `python3 scripts/post_comment.py {q['id']} runs/{day}/{rid}/comment.md --confirm`\n")
 
 open(os.path.join(ROOT, "review.md"), "w", encoding="utf-8").write("\n".join(lines))
 print(f"{len(queue)} record(s) -> review.md and runs/{day}/")

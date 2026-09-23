@@ -11,6 +11,9 @@ CANNED = json.load(open(os.path.join(RULES, "canned.json"), encoding="utf-8"))
 DOI_RE = re.compile(r"(?<![\w.])10\.\d{4,9}/\S+", re.I)
 URL_RE = re.compile(r"\b(?:https?://|www\.)\S+", re.I)
 PREPRINT_RE = re.compile(r"\b(?:pre[\s-]?print|arxiv)\b", re.I)
+DOI_URL_RE = re.compile(r"(?:https?://)?(?:dx\.)?doi\.org/(10\.[^\s,;]+)", re.I)
+# <pre>/<code> or inline fonts come from pasting out of an editor and render oddly
+FORMATTED_DESC_RE = re.compile(r"<(?:pre|code|tt|font)\b|font-family|style\s*=", re.I)
 REFERENCE_LINK_FIELDS = ("ref_link", "ref_doi", "doi", "url")
 
 
@@ -60,12 +63,18 @@ def affiliation_rors(creators):
     return resolved
 
 
+def link_text(value):
+    """ref_link is a {ref_scheme, ref_identifier} object on the real archive."""
+    if isinstance(value, dict):
+        return " ".join(link_text(v) for v in value.values())
+    return str(value or "")
+
+
 def is_preprint_without_link(reference):
     citation = reference.get("ref_citation", "")
     resource_type = str(reference.get("ref_resource_type", ""))
     is_preprint = PREPRINT_RE.search(citation) or "preprint" in resource_type.lower()
-    structured = " ".join(str(reference.get(key) or "")
-                          for key in REFERENCE_LINK_FIELDS)
+    structured = " ".join(link_text(reference.get(key)) for key in REFERENCE_LINK_FIELDS)
     has_link = DOI_RE.search(citation) or URL_RE.search(citation) or \
         DOI_RE.search(structured) or URL_RE.search(structured)
     return bool(is_preprint and not has_link)
@@ -75,7 +84,7 @@ def is_thin_reference(reference):
     """Look at all reference fields, not just the display citation."""
     citation = str(reference.get("ref_citation") or "")
     comment = str(reference.get("ref_comment") or "")
-    links = " ".join(str(reference.get(key) or "") for key in REFERENCE_LINK_FIELDS)
+    links = " ".join(link_text(reference.get(key)) for key in REFERENCE_LINK_FIELDS)
     if DOI_RE.search(citation) or URL_RE.search(citation) or \
             DOI_RE.search(links) or URL_RE.search(links):
         return False
@@ -135,6 +144,11 @@ def check(rec, entries):
             "check whether the affiliation includes a full address")
 
     # description
+    if FORMATTED_DESC_RE.search(md.get("description", "")):
+        f.append({"key": "REVIEW", "text": "Human check: the description carries pasted editor formatting "
+                  "(<pre>, <code> or an inline font), so it renders in an odd font. Ask the author to paste it "
+                  "again as plain text. There is no canned reply for this yet.",
+                  "detail": md.get("description", "")[:80]})
     desc = html.unescape(re.sub(r"<[^>]+>", " ", md.get("description", "")))
     desc = re.sub(r"\s+", " ", desc).strip()
     if not desc:
@@ -168,10 +182,16 @@ def check(rec, entries):
     refs = rec.get("custom_fields", {}).get("mc_references", [])
     if not refs:
         add("ref2", "no reference at all")
+    doi_urls = []
+    for r in refs:
+        doi_urls.append(r.get("ref_citation", ""))
+        doi_urls += [link_text(r.get(key)) for key in REFERENCE_LINK_FIELDS]
+    doi_urls += [str(x.get("identifier") or "") for x in md.get("related_identifiers", [])]
+    for bare in dict.fromkeys(m.group(1).rstrip(".)") for text in doi_urls
+                              for m in DOI_URL_RE.finditer(text)):
+        add("ref4", f"DOI written as a URL, change it to {bare}")
     for r in refs:
         cit = r.get("ref_citation", "")
-        if "doi.org" in cit or re.search(r"https?://(dx\.)?doi\.org/", cit):
-            add("ref4", cit)
         if is_preprint_without_link(r):
             add("ref7", f"preprint reference has no DOI or URL: {cit!r}")
         if is_thin_reference(r):
