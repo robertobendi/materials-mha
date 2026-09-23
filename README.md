@@ -153,6 +153,11 @@ python -m unittest discover -s tests -v
 node --check app\app.js
 ```
 
+## Maintaining
+
+See `docs/MAINTAINING.md` for how the pieces fit together, how to add a check or a
+canned reply, and the safety rules that must not change.
+
 ## Layout
 
 ```text
