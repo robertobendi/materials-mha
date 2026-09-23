@@ -32,6 +32,26 @@ class DashboardTests(unittest.TestCase):
         timeline.append(self.comment("1965"))
         self.assertEqual(dashboard.queue_row(self.request(), timeline, "moderator")["bucket"], "waiting")
 
+    def test_past_moderators_count_as_team(self):
+        timeline = [self.comment("98", "Dear A. Author,\n\nThank you for your submission.")]
+        row = dashboard.queue_row(self.request(), timeline, "moderator")
+        self.assertEqual((row["bucket"], row["last_actor"]), ("waiting", "team"))
+        timeline.append(self.comment("author", "Done."))
+        self.assertEqual(dashboard.queue_row(self.request(), timeline, "moderator")["bucket"], "replied")
+
+    def test_migrated_threads_are_ordered_by_their_original_timestamps(self):
+        timeline = [self.comment("1822", "11/06/2025 13:42:03\n from: archive@materialscloud.org\nPlease add a README."),
+                    self.comment("author", "31/05/2025 05:38:13\n from: author@example.org\nRequest to review record")]
+        row = dashboard.queue_row(self.request(), timeline, "moderator")
+        self.assertEqual((row["bucket"], row["last_actor"]), ("waiting", "team"))
+
+    def test_preview_skips_our_openers(self):
+        text = ("Thank you for your submission to the Materials Cloud Archive.\n"
+                "Before we can publish your record, I kindly ask you to make some small changes.\n\n"
+                "Title\nPlease revise the title.")
+        self.assertEqual(dashboard.preview(text), "Title Please revise the title.")
+        self.assertEqual(dashboard.preview("Thank you, it is fixed."), "Thank you, it is fixed.")
+
     def test_private_html_is_reduced_to_plain_text(self):
         value = dashboard.plain("<p>Hello &amp; welcome</p><script>bad()</script><div>Next</div>")
         self.assertNotIn("<", value)

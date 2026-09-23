@@ -176,12 +176,18 @@ class AIReviewTests(unittest.TestCase):
         self.assertNotIn("action_url", result)
 
     def test_only_supported_canned_reply_lines_survive(self):
-        raw = model_result(reply_keys=["d3", "r4", "not-allowed"])
+        raw = model_result(scope_verdict="unclear", reply_keys=["d3", "r4", "not-allowed"])
         verdict = {"status": "changes", "findings": [{"key": "d3", "detail": "short"}],
                    "eyeball": []}
         result = ai_review.normalize(raw, verdict, PLAYBOOK)
         self.assertEqual([line["key"] for line in result["reply_lines"]], ["r4"])
         self.assertTrue(result["reply_lines"][0]["text"])
+
+    def test_in_scope_verdict_drops_out_of_scope_wording(self):
+        raw = model_result(readme_ok=False, reply_keys=["r1", "f4"])
+        result = ai_review.normalize(raw, {"status": "ok", "findings": [], "eyeball": []},
+                                     PLAYBOOK, readme_read=True)
+        self.assertEqual([line["key"] for line in result["reply_lines"]], ["f4"])
 
     def test_structured_output_envelope_is_parsed(self):
         raw = model_result()

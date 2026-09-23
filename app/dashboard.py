@@ -77,25 +77,55 @@ def _request_query(extra):
     return f"receiver.community:{COMMUNITY_ID} AND type:community-submission AND {extra}"
 
 
+# The June 2025 migration imported old threads newest first, each message starting
+# with its original "dd/mm/yyyy hh:mm:ss" timestamp.
+MIGRATED_STAMP = re.compile(r"(\d{2})/(\d{2})/(\d{4}) (\d{2}:\d{2}:\d{2})")
+
+
+def _sent_at(event):
+    stamp = MIGRATED_STAMP.match(plain(event["payload"].get("content")))
+    if stamp:
+        day, month, year, clock = stamp.groups()
+        return f"{year}-{month}-{day}T{clock}"
+    return str(event.get("created") or "")
+
+
 def _comments(timeline):
-    return [event for event in timeline if event.get("type") == "C"
-            and isinstance(event.get("payload"), dict)
-            and plain(event["payload"].get("content"))]
+    comments = [event for event in timeline if event.get("type") == "C"
+                and isinstance(event.get("payload"), dict)
+                and plain(event["payload"].get("content"))]
+    return sorted(comments, key=_sent_at)
 
 
-def _team_ids(current_user_id):
-    return {value for value in (str(current_user_id or ""), HISTORICAL_MODERATOR_ID) if value}
+# Our own openers carry no information in a queue preview.
+BOILERPLATE_LINE = re.compile(
+    r"(?:dear .*|thank you for (?:your|the|providing).*|before (?:we can publish|reviewing) .*)", re.I)
+
+
+def _is_team(request, current_user_id):
+    """Anyone other than the submitter is staff: past moderators and the June 2025
+    migration account comment under ids we cannot list up front."""
+    submitter = str((request.get("created_by") or {}).get("user") or "")
+    known = {str(current_user_id or ""), HISTORICAL_MODERATOR_ID} - {""}
+    return lambda user_id: user_id in known or bool(submitter) and user_id != submitter
+
+
+def preview(text):
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    while len(lines) > 1 and BOILERPLATE_LINE.fullmatch(lines[0]):
+        lines.pop(0)
+    return " ".join(lines)[:280]
 
 
 def queue_row(request, timeline, current_user_id):
     comments = _comments(timeline)
-    team = _team_ids(current_user_id)
-    team_comments = [item for item in comments if str(item.get("created_by", {}).get("user")) in team]
+    is_team = _is_team(request, current_user_id)
+    team_comments = [item for item in comments if is_team(str(item.get("created_by", {}).get("user")))]
     last = comments[-1] if comments else None
     last_id = str(last.get("created_by", {}).get("user")) if last else ""
     if not team_comments:
         bucket = "new"
-    elif last_id not in team:
+    elif not is_team(last_id):
         bucket = "replied"
     else:
         bucket = "waiting"
@@ -110,8 +140,8 @@ def queue_row(request, timeline, current_user_id):
         "bucket": bucket,
         "comment_count": len(comments),
         "moderator_comment_count": len(team_comments),
-        "last_actor": "team" if last and last_id in team else ("submitter" if last else "none"),
-        "last_message": plain(last.get("payload", {}).get("content"))[:280] if last else "",
+        "last_actor": "team" if last and is_team(last_id) else ("submitter" if last else "none"),
+        "last_message": preview(plain(last.get("payload", {}).get("content"))) if last else "",
     }
 
 
@@ -128,6 +158,7 @@ def dashboard(archive):
             timeline_errors += 1
         rows.append(queue_row(request, timeline, account["id"]))
     rows.sort(key=lambda item: item.get("updated") or "", reverse=True)
+    rows.sort(key=lambda item: item["bucket"] == "waiting")
     accepted = archive.requests(_request_query("status:accepted"), size=1)["total"]
     declined = archive.requests(_request_query("status:declined"), size=1)["total"]
     counts = {bucket: sum(item["bucket"] == bucket for item in rows)
@@ -222,15 +253,15 @@ def detail(archive, request_id, verdict_builder, playbook):
             raise
     timeline = archive.timeline(request_id)["hits"]
     me = _identity(archive.me())
-    team = _team_ids(me["id"])
+    is_team = _is_team(request, me["id"])
     comments = _comments(timeline)
     moderator_seen = False
     follow_up = False
     conversation = []
     for event in comments:
         author_id = str(event.get("created_by", {}).get("user") or "")
-        is_team = author_id in team
-        if is_team:
+        staff = is_team(author_id)
+        if staff:
             moderator_seen = True
         elif moderator_seen:
             follow_up = True
@@ -240,8 +271,9 @@ def detail(archive, request_id, verdict_builder, playbook):
             "updated": event.get("updated"),
             "author": ("You" if author_id == me["id"] else
                        "Francesca" if author_id == HISTORICAL_MODERATOR_ID else
+                       "Moderator" if staff else
                        "Submitter"),
-            "role": "moderator" if is_team else "submitter",
+            "role": "moderator" if staff else "submitter",
             "content": plain(event.get("payload", {}).get("content")),
         })
     result = verdict_builder(record)

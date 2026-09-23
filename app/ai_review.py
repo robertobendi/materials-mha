@@ -16,7 +16,7 @@ import urllib.request
 import deterministic
 
 
-AI_REPLY_KEYS = ("d2", "d3", "d5", "d6", "d9")
+AI_REPLY_KEYS = ("d2", "d3", "d5", "d6", "d9", "f4")
 AI_SCOPE_KEYS = ("r1", "r2", "r3", "r4")
 AI_ACTIONS = (
     "ready_to_approve", "request_changes", "clarify_scope",
@@ -355,12 +355,13 @@ Return exactly one JSON object, with no other text and no extra keys:
   "readme_ok": true | false,
   "readme_reason": "one or two sentences",
   "suggested_action": "ready_to_approve" | "request_changes" | "clarify_scope" | "suggest_decline" | "escalate" | "human_review",
-  "reply_keys": [ "d2" | "d3" | "d5" | "d6" | "d9" | "r1" | "r2" | "r3" | "r4" ],
+  "reply_keys": [ "d2" | "d3" | "d5" | "d6" | "d9" | "f4" | "r1" | "r2" | "r3" | "r4" ],
   "moderator_note": "one or two sentences"
 }
 
 Do not draft free-form text for the submitter. You may select only the supplied canned reply keys:
-d2/d3/d5/d6/d9 for description feedback and r1/r2/r3/r4 for scope.
+d2/d3/d5/d6/d9 for description feedback, f4 when the README does not describe the deposited files,
+and r1/r2/r3/r4 for scope only when the work is not clearly computational.
 Set readme_ok to false when submission.readme is null.
 Use ready_to_approve only when the supplied deterministic findings are empty, the scope is in range,
 and the description and README are adequate. Use clarify_scope when evidence is ambiguous, suggest_decline only
@@ -536,9 +537,11 @@ def normalize(raw, verdict, playbook, provider="AI provider", readme_read=False)
         action = "ready_to_approve"
 
     found = {str(item.get("key")) for item in findings}
+    allowed = AI_REPLY_KEYS if scope in ("computational", "mixed") else AI_REPLY_KEYS + AI_SCOPE_KEYS
     reply_keys = []
     for key in raw.get("reply_keys") or []:
-        if key in AI_REPLY_KEYS + AI_SCOPE_KEYS and key not in found and key not in reply_keys:
+        if key in allowed and key not in found and key not in reply_keys and not (
+                key == "f4" and "f1" in found):
             reply_keys.append(key)
     return {
         "scope": {
