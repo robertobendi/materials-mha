@@ -1,0 +1,49 @@
+volumes:
+  ollama:
+  open-webui:
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    volumes:
+      - ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              #device_ids: ['0', '1'] # Select a gpu, or
+              count: all
+              capabilities: [gpu]
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - 3000:8080
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+    volumes:
+      - open-webui:/app/backend/data
+  mca_moderation:
+    image: materials-mha:dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: moderation
+    ports:
+      - 5555:8000
+    environment:
+      - MC_AI_PROVIDER=custom
+      - MC_AI_ENDPOINT=http://open-webui:8080/api/v1/
+      - MC_AI_KEY=<REPLACE_WITH_YOUR_KEY>
+      - MC_AI_MODEL=<REPLACE_WITH_YOUR_MODEL>
+
+      # Running the mock server on the host
+      - MC_ARCHIVE=http://host.docker.internal:8899
+      - MC_API_BASE=http://host.docker.internal:8899
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - open-webui
+    
