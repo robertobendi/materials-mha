@@ -345,6 +345,7 @@ class H(BaseHTTPRequestHandler):
                         "timeline_fingerprint": timeline_fingerprint,
                         "eligible": allowed, "context": context,
                         "record": result["record"],
+                        "conversation": result.get("conversation", []),
                         "verdict": {key: result.get(key) for key in
                                     ("status", "findings", "eyeball", "waiver")},
                         "ai": None,
@@ -393,13 +394,15 @@ class H(BaseHTTPRequestHandler):
             ai_revision = session["ai_revision"]
             record = review["record"]
             assessment = review["verdict"]
+            conversation = review.get("conversation", [])
             context = review["context"]
             token = session["token"]
             connection = dict(connection) if connection else None
             session["ai_in_progress"] = True
         try:
             readme = readme_for(Archive(ARCHIVE, token), record, context)
-            result = ai_review.review(record, assessment, PLAYBOOK, connection=connection, readme=readme)
+            result = ai_review.review(record, assessment, PLAYBOOK, connection=connection,
+                                      readme=readme, conversation=conversation)
         except TimeoutError:
             return self._send(504, {"error": "AI review timed out. The rule-based findings are still available."})
         except ai_review.AIProviderError as error:

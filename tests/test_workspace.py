@@ -279,6 +279,12 @@ class WorkspaceTests(unittest.TestCase):
             "api_key": "test-ai-key",
         })
         self.assertEqual(status, 200, saved)
+        self.archive.timeline = [
+            {"type": "C", "id": "c1", "created": "2026-09-08T09:30:00", "created_by": {"user": "moderator"},
+             "payload": {"content": "<p>Please add a README.</p>", "format": "html"}},
+            {"type": "C", "id": "c2", "created": "2026-09-08T09:45:00", "created_by": {"user": "submitter"},
+             "payload": {"content": "<p>We added the README as requested.</p>", "format": "html"}},
+        ]
         result = self.open_detail()
         advice = {
             "scope": {"verdict": "computational", "confidence": "high", "reason": "Simulation."},
@@ -299,6 +305,9 @@ class WorkspaceTests(unittest.TestCase):
             self.assertNotIn("conversation", sent_record)
             self.assertNotIn("conversation", sent_verdict)
             self.assertEqual(reviewer.call_args.kwargs["readme"], self.archive.readme)
+            sent_conversation = reviewer.call_args.kwargs["conversation"]
+            self.assertEqual([m["role"] for m in sent_conversation], ["moderator", "submitter"])
+            self.assertEqual(sent_conversation[1]["content"], "We added the README as requested.")
             connection = reviewer.call_args.kwargs["connection"]
             self.assertEqual(connection, {
                 "provider": "custom",
