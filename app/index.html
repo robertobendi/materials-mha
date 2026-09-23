@@ -47,7 +47,6 @@
     </div>
   </header>
 
-  <div id="mock-banner" class="mock-banner" hidden>LOCAL MOCK DATA &mdash; production is not being used.</div>
   <section id="account-panel" class="account-panel" hidden aria-label="Workspace settings">
     <div class="panel-heading"><div><span class="eyebrow">Archive access</span><h2 id="account-title">Moderator account</h2></div><button id="account-close" class="icon-button" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div>
     <p>The ignored local token stays in server memory and is never returned to this page or sent to the AI reviewer.</p>
@@ -75,18 +74,18 @@
 
     <section id="dashboard-view" class="view">
       <div class="page-intro compact-intro">
-        <div><p class="eyebrow">Moderation overview</p><h1>Hello, <span id="hello-name">moderator</span>.</h1><p>Prioritize new submissions and author replies, then open one in the focused review page.</p></div>
+        <h1>Moderation queue</h1>
         <div class="intro-actions"><span id="refreshed-at">Not refreshed yet</span><button id="refresh" class="secondary-button"><svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg>Refresh</button></div>
       </div>
       <section class="stats-grid" aria-label="Queue summary">
-        <button class="stat-card selected" data-filter="all"><span class="stat-icon blue"><svg class="icon" aria-hidden="true"><use href="#i-inbox"/></svg></span><span><b id="stat-open">&mdash;</b><small>Things to review</small></span></button>
+        <button class="stat-card selected" data-filter="all"><span class="stat-icon blue"><svg class="icon" aria-hidden="true"><use href="#i-inbox"/></svg></span><span><b id="stat-open">&mdash;</b><small>All open</small></span></button>
         <button class="stat-card" data-filter="new"><span class="stat-icon red"><svg class="icon" aria-hidden="true"><use href="#i-file-plus"/></svg></span><span><b id="stat-new">&mdash;</b><small>New records</small></span></button>
         <button class="stat-card" data-filter="replied"><span class="stat-icon green"><svg class="icon" aria-hidden="true"><use href="#i-reply"/></svg></span><span><b id="stat-replies">&mdash;</b><small>New replies</small></span></button>
         <button class="stat-card" data-filter="waiting"><span class="stat-icon amber"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg></span><span><b id="stat-waiting">&mdash;</b><small>Waiting on authors</small></span></button>
       </section>
       <section class="queue-card" aria-label="Submission queue">
-        <div class="queue-heading"><div><span class="eyebrow">Live queue</span><h2>Review queue <span id="queue-count">Loading...</span></h2></div><label class="search-box"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input id="queue-search" type="search" placeholder="Search title or ID" aria-label="Search queue"></label></div>
-        <div class="queue-columns" aria-hidden="true"><span>Request</span><span>Conversation</span><span>Updated</span><span></span></div>
+        <div class="queue-heading"><div><h2><span id="queue-count">Loading...</span></h2></div><label class="search-box"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input id="queue-search" type="search" placeholder="Search title or ID" aria-label="Search queue"></label></div>
+        <div class="queue-columns" aria-hidden="true"><span>Request</span><span>Last message</span><span>Updated</span><span></span></div>
         <div id="queue-loading" class="queue-loading"><span class="spinner"></span>Reading requests and conversations...</div>
         <div id="queue-empty" class="queue-empty" hidden><b>No matching requests</b><span>Try another filter or refresh the queue.</span></div>
         <div id="queue-list" class="queue-list"></div>
@@ -94,7 +93,7 @@
     </section>
 
     <section id="review-view" class="view" hidden>
-      <div class="review-toolbar"><button id="back-dashboard" class="text-button"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg>Dashboard</button><div><span class="eyebrow">Focused workspace</span><b id="review-toolbar-title">Submission review</b></div><span class="advisory-pill">AI suggests &middot; you decide</span></div>
+      <div class="review-toolbar"><button id="back-dashboard" class="text-button"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg>Dashboard</button><div></div><span class="advisory-pill">AI suggests &middot; you decide</span></div>
       <article class="detail-panel" aria-live="polite">
         <div id="detail-empty" class="detail-empty"><div class="empty-illustration"><svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg></div><h2>No submission selected</h2><p>Choose a record from the Dashboard queue or History to open its review workspace.</p><button id="empty-dashboard" class="secondary-button">Go to Dashboard</button></div>
         <div id="detail-loading" class="detail-empty" hidden><span class="spinner large"></span><h2>Opening submission</h2><p>Reading the latest draft metadata, files, and conversation...</p></div>
@@ -114,19 +113,19 @@
           <section id="review-tab" class="tab-panel">
             <div class="review-layout">
               <div class="review-main">
+                <section class="findings-card"><div class="section-title"><div><span class="eyebrow">Rule-based checks</span><h2>Review findings</h2></div><span id="verdict-badge" class="verdict-badge"></span></div><ul id="findings" class="findings"></ul><div id="manual-checks" class="manual-checks"></div></section>
                 <section id="ai-card" class="ai-card">
                   <div class="section-title"><div><span class="eyebrow">AI advisory</span><h2>Suggested final action</h2></div><span id="ai-action" class="ai-action neutral">Waiting</span></div>
-                  <p class="ai-disclosure">Runs automatically for new records and author replies. It receives title, description, keywords, references, funders, filenames, the README text, the request conversation, and rule findings &mdash; never your Archive token or archive contents. Everything from the submitter is treated as untrusted; the AI can only pick canned wording. Provider: <b id="ai-provider">not configured</b>.</p>
+                  <p class="ai-disclosure" title="Runs automatically for new records and author replies. It receives title, description, keywords, references, funders, filenames, the README text, the request conversation, and rule findings, never your Archive token or archive contents. Everything from the submitter is treated as untrusted; the AI can only pick canned wording.">Provider: <b id="ai-provider">not configured</b> &middot; advisory only, picks canned wording</p>
                   <div id="ai-loading" class="ai-loading" hidden><span class="spinner"></span><span>Reviewing scope and description. This can take up to a minute...</span></div>
                   <div id="ai-error" class="ai-error" hidden><span id="ai-error-copy"></span><button id="retry-ai" class="text-button">Try AI review</button></div>
                   <div id="ai-result" hidden>
                     <div class="ai-grid"><div><span>Scope</span><b id="ai-scope"></b><p id="ai-scope-reason"></p></div><div><span>Description</span><b id="ai-description"></b><p id="ai-description-reason"></p></div><div><span>README</span><b id="ai-readme"></b><p id="ai-readme-reason"></p></div></div>
                     <p id="ai-note" class="ai-note"></p>
-                    <div id="ai-replies" class="ai-replies" hidden><div><b>Suggested canned lines</b><p>Review the wording before adding it to your editable draft.</p></div><div id="ai-reply-lines"></div><button id="add-ai-replies" class="secondary-button">Add to reply draft</button></div>
+                    <div id="ai-replies" class="ai-replies" hidden><div><b>Suggested canned lines</b></div><div id="ai-reply-lines"></div><button id="add-ai-replies" class="secondary-button">Add to reply draft</button></div>
                   </div>
                 </section>
 
-                <section class="findings-card"><div class="section-title"><div><span class="eyebrow">Rule-based checks</span><h2>Review findings</h2></div><span id="verdict-badge" class="verdict-badge"></span></div><p class="helper">Verify every finding against the record. Automated checks do not decide scientific quality.</p><ul id="findings" class="findings"></ul><div id="manual-checks" class="manual-checks"></div></section>
               </div>
               <aside class="human-card"><span class="eyebrow">Final checks</span><h2>AI-ticked review</h2><div id="human-checks"><label><input type="checkbox" name="scope"><span>Computational scope and funding</span></label><label><input type="checkbox" name="description"><span>Description explains work and data</span></label><label><input type="checkbox" name="files"><span>README describes the deposited files</span></label><label><input type="checkbox" name="findings"><span>Findings and exceptions resolved</span></label></div><p id="gate-note" class="helper">The AI review ticks these checks; untick any you disagree with.</p></aside>
             </div>
@@ -148,7 +147,7 @@
       </article>
     </section>
 
-    <section id="history-view" class="view" hidden><div class="page-intro"><div><p class="eyebrow">Decision archive</p><h1>Moderation history</h1><p>Use past outcomes as precedents. Records and decisions remain read-only here.</p></div></div><div class="history-card"><div class="history-toolbar"><div class="segmented"><button class="active" data-history-status="accepted">Accepted</button><button data-history-status="declined">Declined</button><button data-history-status="submitted">Open</button></div><span id="history-total"></span></div><div id="history-loading" class="queue-loading" hidden><span class="spinner"></span>Loading history...</div><div id="history-list" class="history-list"></div><div class="pagination"><button id="history-prev" class="secondary-button"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg>Previous</button><span id="history-page">Page 1</span><button id="history-next" class="secondary-button">Next<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button></div></div></section>
+    <section id="history-view" class="view" hidden><div class="page-intro compact-intro"><h1>Moderation history</h1></div><div class="history-card"><div class="history-toolbar"><div class="segmented"><button class="active" data-history-status="accepted">Accepted</button><button data-history-status="declined">Declined</button><button data-history-status="submitted">Open</button></div><span id="history-total"></span></div><div id="history-loading" class="queue-loading" hidden><span class="spinner"></span>Loading history...</div><div id="history-list" class="history-list"></div><div class="pagination"><button id="history-prev" class="secondary-button"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg>Previous</button><span id="history-page">Page 1</span><button id="history-next" class="secondary-button">Next<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button></div></div></section>
 
     <section id="playbook-view" class="view" hidden><div class="page-intro"><div><p class="eyebrow">Living moderation guide</p><h1>Francesca's playbook</h1><p>Generalized from prior decisions and replies; private conversation text is not stored in the repository.</p></div></div><div class="playbook-grid"><section class="playbook-card source-card"><span class="eyebrow">Calibration</span><h2 id="playbook-source">Historical precedent</h2><div class="calibration-stats"><div><b id="sample-requests">&mdash;</b><span>requests sampled</span></div><div><b id="sample-comments">&mdash;</b><span>moderator replies</span></div><div><b id="sample-decisions">&mdash;</b><span>accepted decisions checked</span></div><div><b id="sample-date">&mdash;</b><span>last calibrated</span></div></div><p id="playbook-attribution" class="helper"></p><h3 class="calibration-heading">Corrections learned from accepted records</h3><ul id="schema-corrections" class="principles compact"></ul></section><section class="playbook-card"><span class="eyebrow">Reply principles</span><h2>How to communicate</h2><ol id="principles" class="principles"></ol></section><section class="playbook-card template-card"><span class="eyebrow">Default structure</span><h2>Change request template</h2><pre id="reply-template"></pre></section><section class="playbook-card guardrail-card"><span class="eyebrow">Guardrails</span><h2>What remains human</h2><ul><li>Scientific scope and ambiguous descriptions</li><li>File-content and copyright inspection</li><li>Funding exceptions and escalations</li><li>Every edit, decline, and publication decision</li><li>The final review and send of every reply</li></ul></section></div></section>
   </main>

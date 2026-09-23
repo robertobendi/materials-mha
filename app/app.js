@@ -119,7 +119,6 @@ function visibleText(value) {
 function setAccount(account) {
   if (!account) return;
   const display = account.display_name || 'Moderator';
-  $('#hello-name').textContent = display.split(' ')[0] || 'moderator';
   $('#account-name').textContent = display;
   $('#account-title').textContent = display;
   $('#avatar').textContent = initials(display);
@@ -245,16 +244,16 @@ function renderQueue() {
     button.classList.toggle('active', state.current?.request?.id === item.request_id);
 
     const record = node('span', '', 'queue-record');
-    const top = node('span', '', 'queue-item-top');
-    top.append(node('span', bucketLabels[item.bucket] || item.bucket, 'badge ' + item.bucket),
-      node('code', item.record_id));
-    record.append(top, node('strong', item.title));
+    const title = node('strong', item.title);
+    title.title = item.title;
+    record.append(node('span', bucketLabels[item.bucket] || item.bucket, 'badge ' + item.bucket),
+      title, node('code', item.record_id));
 
     const conversation = node('span', '', 'queue-conversation');
-    conversation.append(node('span', item.comment_count
-      ? item.comment_count + (item.comment_count === 1 ? ' message' : ' messages')
-      : 'No messages', 'queue-message-count'));
-    conversation.append(node('span', item.last_message || 'No conversation yet', 'queue-snippet'));
+    const who = item.last_actor === 'team' ? 'Us' : item.last_actor === 'submitter' ? 'Author' : '';
+    conversation.title = item.last_message || '';
+    conversation.append(node('span', item.comment_count ? String(item.comment_count) : '0', 'queue-message-count'),
+      node('span', item.last_message ? who + ': ' + item.last_message : 'No messages yet', 'queue-snippet'));
 
     const open = node('span', 'Review', 'queue-open');
     open.append(icon('i-chevron-right'));
@@ -284,7 +283,6 @@ async function loadDetail(requestId) {
   if (state.detailController) state.detailController.abort();
   state.detailController = new AbortController();
   showDetailState('loading');
-  $('#review-toolbar-title').textContent = 'Opening submission...';
   try {
     const result = await api('/api/dashboard/request/' + encodeURIComponent(requestId), undefined,
       state.detailController.signal);
@@ -315,7 +313,6 @@ async function loadDetail(requestId) {
 }
 
 function renderDetail(result) {
-  $('#review-toolbar-title').textContent = result.title || 'Submission review';
   $('#record-bucket').textContent = bucketLabels[result.queue_bucket] || result.queue_bucket || 'Review';
   $('#record-bucket').className = 'badge ' + (result.queue_bucket || 'neutral');
   $('#record-status').textContent = result.request.status || 'unknown';
@@ -350,9 +347,7 @@ function renderDetail(result) {
     item.append(node('span', finding.key, 'finding-key'), copy);
     return item;
   });
-  if (!findingNodes.length) {
-    findingNodes.push(node('li', 'No deterministic issues found. Continue with the AI and human checks.', 'all-clear'));
-  }
+  $('.findings-card').hidden = !findingNodes.length && !result.eyeball.length;
   $('#findings').replaceChildren(...findingNodes);
   $('#manual-checks').replaceChildren(...result.eyeball.map(text => node('div', text, 'manual-check')));
 
@@ -497,7 +492,8 @@ function applyAIChecks(result) {
     let note = label.querySelector('.check-note');
     if (!note) { note = node('small', '', 'check-note'); label.append(note); }
     note.className = 'check-note ' + (ok ? 'ok' : 'open');
-    note.textContent = (ok ? 'AI: passed. ' : 'AI: open. ') + (checkReasons[input.name](result) || '');
+    note.textContent = ok ? 'AI: passed' : 'AI: open';
+    note.title = checkReasons[input.name](result) || '';
   });
   updateGate();
 }
@@ -866,10 +862,7 @@ $('#trigger').addEventListener('click', async () => {
   try {
     state.session = await api('/api/session');
     renderAIConnection();
-    $('#mock-banner').hidden = !state.session.mock;
-    $('#mode-label').textContent = state.session.mock
-      ? (state.session.comments_enabled ? 'Comments only · local mock' : 'Read-only · local mock')
-      : (state.session.comments_enabled ? 'Comments only · production' : 'Read-only · production');
+    $('#mode-label').textContent = state.session.comments_enabled ? 'Comments only' : 'Read-only';
     loadPlaybook();
     if (state.session.has_token) {
       await loadDashboard();
