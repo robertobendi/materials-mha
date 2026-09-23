@@ -112,6 +112,43 @@ moderator token in the browser, so only people with Archive access can read anyt
 Set `MC_ALLOW_ENV_TOKEN=1` only for a private instance you control, and pin
 `MC_ALLOWED_HOSTS` when running behind a proxy.
 
+### Compose
+
+```bash
+docker compose up -d
+```
+
+The `compose.yml` file runs the moderation workspace and an Ollama+OpenWebUI container for local AI.
+The OpenWebUI exposes its interface on port 5555 to the host, and should be configured with a user + API key and a model
+before running.
+
+For setting up an API key see the [OpenWebUI documentation](https://docs.openwebui.com/features/authentication-access/api-keys/).
+For setting up a model go to `Settings > Connections > Manage Ollama API Connections` and click on the `manage` button. Here you can download the model/s you want to use. (*Note: The models are not downloaded automatically, you need to download them manually before running the moderation workspace.*)
+
+After OpenWebUI is configured, follow the instructions to use the specified model and API key in the workspace, or add them to the compose files as environment variables
+
+```yaml
+    environment:
+      - MC_AI_PROVIDER=custom
+      - MC_AI_ENDPOINT=http://open-webui:8080/api/v1/
+      - MC_AI_KEY=<REPLACE_WITH_YOUR_KEY>
+      - MC_AI_MODEL=<REPLACE_WITH_YOUR_MODEL>
+```
+
+or inside a `.env` file:
+
+```text
+MC_AI_KEY=<REPLACE_WITH_YOUR_KEY>
+MC_AI_MODEL=<REPLACE_WITH_YOUR_MODEL>
+```
+
+and modify the `compose.yml` file to load the `.env` file:
+
+```yaml
+    env_file:
+      - .env
+```
+
 ## The command-line pass
 
 The dashboard is the main workflow, but the checks also run headless. This writes
