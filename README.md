@@ -32,11 +32,16 @@ hundred accepted records.
 
 ## Running it
 
-There is nothing to install. Python 3.8+ and no third-party packages.
+Python 3.9+. The web workspace needs Flask (`requirements.txt`); the scripts in
+`scripts/` use only the standard library. One-time setup:
 
 ```powershell
-python app\serve.py --open
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python app\serve.py --open
 ```
+
+On macOS, double-click `Open Review.command`; it creates `.venv` on first run.
 
 The workspace comes up at `http://127.0.0.1:8000`. Put the moderator token in the
 environment or in a local `.env` file:
@@ -57,7 +62,7 @@ fixtures:
 python backend\mock_archive.py
 $env:MC_API_BASE = "http://127.0.0.1:8899"
 $env:MC_ARCHIVE = "http://127.0.0.1:8899"
-python app\serve.py --open
+.venv\Scripts\python app\serve.py --open
 ```
 
 See `DEMO.md` for a short walkthrough of the six example submissions. The offline
@@ -106,7 +111,7 @@ advisory fields. Whatever the model says, the rules and the human checks still a
 
 ## Hosting
 
-No dependencies and no build step, so it runs anywhere Python does. There is a
+One dependency (Flask) and no build step. There is a
 `Dockerfile` for container hosts and a `render.yaml` blueprint for Render.
 
 ```bash

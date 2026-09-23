@@ -5,3 +5,4 @@ backend/state.json
 runs/
 review.md
 .DS_Store
+.venv/

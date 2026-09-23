@@ -12,6 +12,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
+from werkzeug.serving import make_server
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "app"))
 import serve
@@ -124,7 +126,7 @@ class WorkspaceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.archive = ThreadingHTTPServer(("127.0.0.1", 0), FakeArchive)
-        cls.app = ThreadingHTTPServer(("127.0.0.1", 0), serve.H)
+        cls.app = make_server("127.0.0.1", 0, serve.app, threaded=True)
         cls.threads = []
         for server in (cls.archive, cls.app):
             thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": .01}, daemon=True)

@@ -11,7 +11,7 @@ The mock and the dashboard, already running:
 
 ```bash
 python3 backend/mock_archive.py                          # mock Archive on :8899
-MC_ARCHIVE=http://127.0.0.1:8899 python3 app/serve.py    # dashboard on :8000
+MC_ARCHIVE=http://127.0.0.1:8899 .venv/bin/python app/serve.py    # dashboard on :8000
 ```
 
 To reset and re-seed:
