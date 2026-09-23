@@ -1,7 +1,7 @@
-"""Small API client. MC_API_BASE picks mock or real; MC_TOKEN is real-only."""
+"""Small Materials Cloud Archive API client. MC_TOKEN is the moderator token."""
 import json, os, urllib.parse, urllib.request
 
-BASE = os.environ.get("MC_API_BASE", "http://127.0.0.1:8899")
+BASE = "https://archive.materialscloud.org"
 TOKEN = os.environ.get("MC_TOKEN")
 READ_ONLY = os.environ.get("MC_READ_ONLY", "1") == "1"
 

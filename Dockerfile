@@ -13,7 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 COPY scripts ./scripts
 COPY rules ./rules
-COPY fixtures/base_clean.json ./fixtures/base_clean.json
 
 EXPOSE 8000
 

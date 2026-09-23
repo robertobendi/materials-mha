@@ -28,7 +28,7 @@ import ai_review
 import dashboard as dashboard_data
 from archive_client import Archive, CommentWriter, IDENTIFIER, PRODUCTION, README_KEY
 
-ARCHIVE = os.environ.get("MC_ARCHIVE", PRODUCTION).rstrip("/")
+ARCHIVE = PRODUCTION
 HOST = (os.environ.get("MC_HOST", "127.0.0.1").strip() or "127.0.0.1")
 PORT = int(os.environ.get("PORT", 8000))
 LOOPBACK = {"127.0.0.1", "localhost", "::1"}
@@ -359,13 +359,7 @@ def session_info():
                        "decisions_enabled": False,
                        "ai_available": public_ai["available"],
                        "ai": public_ai,
-                       "archive": ARCHIVE, "mock": ARCHIVE != PRODUCTION})
-
-
-@app.get("/api/example")
-def example():
-    with open(os.path.join(ROOT, "fixtures", "base_clean.json"), encoding="utf-8") as file:
-        return reply(200, json.load(file))
+                       "archive": ARCHIVE})
 
 
 @app.get("/api/playbook")

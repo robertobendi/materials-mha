@@ -585,13 +585,6 @@ class WorkspaceTests(unittest.TestCase):
         session["touched"] = time.monotonic() - serve.SESSION_TTL - 1
         self.assertEqual(self.call("POST", "/check", {"input": LINK})[0], 403)
 
-    def test_existing_demo_fixtures_remain_reviewable(self):
-        for path in (ROOT / "fixtures/demo").glob("*.json"):
-            with self.subTest(fixture=path.name), path.open() as source:
-                record = json.load(source)
-                result = serve.verdict(validate_record(record))
-                self.assertIn(result["status"], ("ok", "warn", "changes", "stop"))
-
 
 if __name__ == "__main__":
     unittest.main()

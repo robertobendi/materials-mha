@@ -55,17 +55,7 @@ to the page, and only attaches it to a small set of GET routes aimed at
 `archive.materialscloud.org`. Redirects are blocked so the token cannot leak to
 another host.
 
-To try it without touching production, run the mock Archive against the bundled demo
-fixtures:
-
-```powershell
-python backend\mock_archive.py
-$env:MC_API_BASE = "http://127.0.0.1:8899"
-$env:MC_ARCHIVE = "http://127.0.0.1:8899"
-.venv\Scripts\python app\serve.py --open
-```
-
-See `DEMO.md` for a short walkthrough of the six example submissions. The offline
+The offline
 checker at `app/checker.html` still works for pasted JSON with no server at all.
 
 ## AI provider
@@ -99,12 +89,10 @@ advisory fields. Whatever the model says, the rules and the human checks still a
 
 | variable | purpose |
 |---|---|
-| `MC_API_BASE` | Archive to talk to. Mock is `http://127.0.0.1:8899`, production is the default. |
-| `MC_TOKEN` | Moderator token. Only used against production. |
+| `MC_TOKEN` | Moderator personal access token. |
 | `MC_READ_ONLY` | `1` by default. Posting requires `0` and `--confirm`. |
 | `MC_HOST` | Interface to bind. Defaults to `127.0.0.1`. |
 | `PORT` | Port to bind. Defaults to `8000`. |
-| `MC_ARCHIVE` | Archive the dashboard talks to. Defaults to production. |
 | `MC_ALLOWED_HOSTS` | Comma-separated host allowlist when running behind a proxy. |
 | `MC_ALLOW_ENV_TOKEN` | Set to `1` to load `MC_TOKEN` on a non-loopback bind. Off by default. |
 | `MC_DISABLE_COMMENTS` | Set to `1` to make the workspace read-only. |
@@ -175,7 +163,6 @@ scripts/calibrate_history.py  read-only historical audit
 rules/canned.json         approved reply wording
 rules/formats.json        file-format and size policy
 rules/precedents.json     playbook from past moderation
-backend/mock_archive.py   local test Archive
 ```
 
 ## License

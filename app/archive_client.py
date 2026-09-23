@@ -29,7 +29,7 @@ class Archive:
             and not parsed.username and not parsed.password and not parsed.path
             and not parsed.query and not parsed.fragment
         ):
-            raise ValueError("Archive must be Materials Cloud or an explicit localhost mock.")
+            raise ValueError("Archive must be Materials Cloud (localhost is allowed only for tests).")
         self.base = base
         self.token = token
         self.opener = urllib.request.build_opener(NoRedirect())

@@ -108,5 +108,5 @@ the send guards, and the error messages.
 
 - `app/` needs Flask (`requirements.txt`). Install into `.venv`; the macOS launcher
   `Open Review.command` does this on first run.
-- `scripts/` and `backend/mock_archive.py` use only the standard library. Keep it that
-  way so the cron pass has nothing to install.
+- `scripts/` uses only the standard library. Keep it that way so the cron pass has
+  nothing to install.
