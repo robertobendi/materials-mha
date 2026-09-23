@@ -39,6 +39,19 @@ class FakeArchive(BaseHTTPRequestHandler):
             self.send_header("Location", server.redirect)
             self.end_headers()
             return
+        if path == "/storage/readme":
+            raw = server.readme.encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/octet-stream")
+            self.send_header("Content-Length", str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
+            return
+        if path.endswith("/files/README.md/content"):
+            self.send_response(302)
+            self.send_header("Location", f"http://127.0.0.1:{server.server_port}/storage/readme")
+            self.end_headers()
+            return
         if server.denied or self.headers.get("Authorization") != "Bearer test-token":
             status = 403
         elif path == "/api/me":
@@ -136,6 +149,7 @@ class WorkspaceTests(unittest.TestCase):
         self.archive.posted_comments = []
         self.archive.denied = False
         self.archive.redirect = None
+        self.archive.readme = "# Dataset\n\nFolder `relaxed/` holds the optimized structures."
         self.archive.record = copy.deepcopy(CLEAN)
         self.archive.record["id"] = "abc12-def34"
         self.archive.request = {"id": REQUEST_ID, "topic": {"record": "abc12-def34"},
@@ -284,6 +298,7 @@ class WorkspaceTests(unittest.TestCase):
             sent_record, sent_verdict, _ = reviewer.call_args.args
             self.assertNotIn("conversation", sent_record)
             self.assertNotIn("conversation", sent_verdict)
+            self.assertEqual(reviewer.call_args.kwargs["readme"], self.archive.readme)
             connection = reviewer.call_args.kwargs["connection"]
             self.assertEqual(connection, {
                 "provider": "custom",
@@ -294,6 +309,32 @@ class WorkspaceTests(unittest.TestCase):
             self.assertNotIn("test-ai-key", json.dumps(first))
             self.assertNotIn("test-ai-key", json.dumps(second))
         self.assertFalse(any(call[0] == "POST" for call in self.archive.calls))
+        storage = [call for call in self.archive.calls if call[1] == "/storage/readme"]
+        self.assertEqual(len(storage), 1)
+        self.assertIsNone(storage[0][2])
+
+    def test_readme_text_follows_storage_redirect_without_token(self):
+        client = Archive(self.base, "test-token")
+        self.assertEqual(client.readme_text("abc12-def34", "README.md"), self.archive.readme)
+        self.assertEqual([call[2] for call in self.archive.calls], ["Bearer test-token", None])
+        for key in ("Data.tar.gz", "../README.md", "notes/README.md"):
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                client.readme_text("abc12-def34", key)
+        self.assertFalse(Archive._safe_get_path("/api/records/abc12-def34/draft/files/Data.tar.gz/content"))
+        self.assertTrue(Archive._safe_get_path("/api/records/abc12-def34/draft/files/README.md/content"))
+        self.archive.redirect = "https://user:pw@evil.example/readme"
+        with self.assertRaises(ValueError):
+            client.readme_text("abc12-def34", "README.md")
+
+    def test_ai_advisory_survives_unreadable_readme(self):
+        self.call("POST", "/api/ai-settings", {"endpoint": "http://127.0.0.1:8765/v1",
+                                                "model": "test-model", "api_key": "k"})
+        result = self.open_detail()
+        self.archive.redirect = "https://user:pw@evil.example/readme"
+        with patch.object(serve.ai_review, "review", return_value={"advisory_only": True}) as reviewer:
+            status, _, _ = self.call("POST", "/api/ai-review", {"review_id": result["review_id"]})
+        self.assertEqual(status, 200)
+        self.assertIsNone(reviewer.call_args.kwargs["readme"])
 
     def test_ai_settings_are_memory_only_preserve_key_and_clear_cached_review(self):
         result = self.open_detail()

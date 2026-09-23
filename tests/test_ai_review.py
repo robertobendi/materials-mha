@@ -26,6 +26,8 @@ def model_result(**overrides):
         "scope_reason": "The methods are computational.",
         "description_ok": True,
         "description_reason": "It explains the work and deposited data.",
+        "readme_ok": True,
+        "readme_reason": "The README lists the folders and their contents.",
         "suggested_action": "ready_to_approve",
         "reply_keys": [],
         "moderator_note": "Inspect the actual files before deciding.",
@@ -65,8 +67,9 @@ class FakeAIProvider(BaseHTTPRequestHandler):
             return
         status = self.server.statuses.pop(0) if self.server.statuses else 200
         if status == 200:
+            payload = self.server.results.pop(0) if self.server.results else self.server.result
             result = {"choices": [{"message": {
-                "content": json.dumps(self.server.result),
+                "content": json.dumps(payload),
             }}]}
         else:
             result = {"error": {"message": "provider detail must not be surfaced"}}
@@ -96,6 +99,7 @@ class AIReviewTests(unittest.TestCase):
     def setUp(self):
         self.provider.calls = []
         self.provider.statuses = []
+        self.provider.results = []
         self.provider.redirect = None
         self.provider.result = model_result()
 
@@ -124,6 +128,27 @@ class AIReviewTests(unittest.TestCase):
         self.assertEqual(result["suggested_action"], "request_changes")
         self.assertTrue(result["advisory_only"])
 
+    def test_readme_text_reaches_the_prompt_and_drives_the_checks(self):
+        clean = {"status": "ok", "findings": [], "eyeball": []}
+        value = ai_review.prompt(copy.deepcopy(CLEAN), clean, PLAYBOOK, readme="Folder `relaxed/` holds structures.")
+        self.assertIn("relaxed/", value)
+        result = ai_review.normalize(model_result(), clean, PLAYBOOK, readme_read=True)
+        self.assertEqual(result["checks"], {"scope": True, "description": True, "files": True, "findings": True})
+        self.assertEqual(result["suggested_action"], "ready_to_approve")
+
+    def test_missing_readme_blocks_the_files_check_even_if_the_model_says_ok(self):
+        clean = {"status": "ok", "findings": [], "eyeball": []}
+        result = ai_review.normalize(model_result(), clean, PLAYBOOK, readme_read=False)
+        self.assertFalse(result["checks"]["files"])
+        self.assertFalse(result["readme"]["ok"])
+        self.assertEqual(result["suggested_action"], "request_changes")
+
+    def test_low_confidence_scope_and_open_findings_leave_checks_unticked(self):
+        verdict = {"status": "warn", "findings": [], "eyeball": ["Data.tar.gz - inspect archive"]}
+        raw = model_result(scope_confidence="low", readme_ok=False)
+        result = ai_review.normalize(raw, verdict, PLAYBOOK, readme_read=True)
+        self.assertEqual(result["checks"], {"scope": False, "description": True, "files": False, "findings": False})
+
     def test_experimental_high_confidence_only_suggests_decline(self):
         raw = model_result(scope_verdict="experimental", scope_confidence="high")
         result = ai_review.normalize(raw, {"status": "ok", "findings": [], "eyeball": []}, PLAYBOOK)
@@ -142,6 +167,25 @@ class AIReviewTests(unittest.TestCase):
         raw = model_result()
         parsed = ai_review._parse_model_output(json.dumps({"structured_output": raw}))
         self.assertEqual(parsed, raw)
+
+    def test_schema_object_nested_under_a_named_wrapper_is_parsed(self):
+        raw = model_result()
+        parsed = ai_review._parse_model_output(json.dumps({"moderation_advisory": raw}))
+        self.assertEqual(parsed, raw)
+
+    def test_unusable_structured_result_falls_back_to_the_next_format(self):
+        self.provider.results = [{"unexpected": "shape"}, model_result()]
+        result = ai_review.run_openai_compatible("Review", {
+            "endpoint": self.provider_base + "/v1",
+            "model": "test-model",
+            "api_key": "test-secret-key",
+        })
+        self.assertEqual(result, model_result())
+        self.assertEqual(len(self.provider.calls), 2)
+        self.assertEqual(
+            self.provider.calls[0]["body"]["response_format"]["type"], "json_schema")
+        self.assertEqual(
+            self.provider.calls[1]["body"]["response_format"]["type"], "json_object")
 
     def test_markdown_fenced_provider_json_is_parsed(self):
         raw = model_result()

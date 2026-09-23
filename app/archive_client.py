@@ -11,6 +11,8 @@ IDENTIFIER = r"[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*"
 MAX_RESPONSE = 8 * 1024 * 1024
 MAX_PAGE_SIZE = 100
 MAX_COMMENT_BYTES = 50 * 1024
+MAX_README_BYTES = 256 * 1024
+README_KEY = re.compile(r"(?i)^(?:readme(?:\.(?:md|txt|rst))?|files_description\.md)$")
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -68,6 +70,8 @@ class Archive:
             return Archive._safe_search_query(parsed.query, {"q", "sort", "size", "page"})
         if re.fullmatch(rf"/api/records/{IDENTIFIER}(?:/draft)?(?:/files)?", route):
             return not parsed.query
+        if re.fullmatch(rf"/api/records/{IDENTIFIER}(?:/draft)?/files/[^/]+/content", route):
+            return not parsed.query and README_KEY.match(urllib.parse.unquote(route.rsplit("/", 2)[1]))
         if route == "/api/records":
             return Archive._safe_search_query(parsed.query, {"q", "sort", "size", "page"})
         return False
@@ -95,6 +99,35 @@ class Archive:
 
     def me(self):
         return self.get("/api/me")
+
+    def readme_text(self, record_id, key, draft=True):
+        """Fetch one README-like file as text. The Archive answers with a redirect to
+        object storage; that hop is followed once, without the token."""
+        if not re.fullmatch(IDENTIFIER, str(record_id)) or not README_KEY.match(str(key)):
+            raise ValueError("Only README-like files can be read.")
+        path = (f"/api/records/{record_id}{'/draft' if draft else ''}/files/"
+                f"{urllib.parse.quote(key, safe='')}/content")
+        if not self._safe_get_path(path):
+            raise ValueError("This Archive endpoint is not allowed.")
+        headers = {"Authorization": "Bearer " + self.token} if self.token else {}
+        request = urllib.request.Request(self.base + path, headers=headers, method="GET")
+        try:
+            with self.opener.open(request, timeout=25) as response:
+                raw = response.read(MAX_README_BYTES + 1)
+        except urllib.error.HTTPError as error:
+            location = error.headers.get("Location", "") if error.code in (301, 302, 303, 307) else ""
+            error.close()
+            if not location:
+                raise
+            target = urllib.parse.urlsplit(location)
+            local = target.scheme == "http" and target.hostname in ("127.0.0.1", "localhost")
+            if not (target.scheme == "https" or local) or not target.hostname or target.username or target.password:
+                raise ValueError("The Archive redirected the file to an unexpected location.")
+            with self.opener.open(urllib.request.Request(location, method="GET"), timeout=25) as response:
+                raw = response.read(MAX_README_BYTES + 1)
+        if len(raw) > MAX_README_BYTES:
+            raw = raw[:MAX_README_BYTES]
+        return raw.decode("utf-8", errors="replace")
 
     def requests(self, query, sort="newest", size=100, page=1):
         params = urllib.parse.urlencode({"q": query, "sort": sort, "size": size, "page": page})

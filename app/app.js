@@ -26,6 +26,16 @@ function node(tag, text, className) {
   return element;
 }
 
+function icon(name) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  use.setAttribute('href', '#' + name);
+  svg.setAttribute('class', 'icon');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.append(use);
+  return svg;
+}
+
 function notice(message) {
   $('#notice').textContent = message || '';
   $('#notice').hidden = !message;
@@ -246,8 +256,9 @@ function renderQueue() {
       : 'No messages', 'queue-message-count'));
     conversation.append(node('span', item.last_message || 'No conversation yet', 'queue-snippet'));
 
-    button.append(record, conversation, node('time', relativeDate(item.updated), 'queue-updated'),
-      node('span', 'Review  >', 'queue-open'));
+    const open = node('span', 'Review', 'queue-open');
+    open.append(icon('i-chevron-right'));
+    button.append(record, conversation, node('time', relativeDate(item.updated), 'queue-updated'), open);
     button.addEventListener('click', () => loadDetail(item.request_id));
     return button;
   }));
@@ -260,10 +271,10 @@ function showDetailState(which) {
 }
 
 function recommendation(result) {
-  if (result.status === 'stop') return ['!', 'Stop and escalate', result.note];
-  if (result.status === 'changes') return [String(result.findings.length), 'Changes to review', result.note];
-  if (result.status === 'warn') return ['?', 'Human judgment needed', result.note];
-  return ['✓', 'Rule-based checks passed', result.note];
+  if (result.status === 'stop') return ['i-alert-octagon', 'Stop and escalate', result.note];
+  if (result.status === 'changes') return ['i-alert-circle', 'Changes to review', result.note];
+  if (result.status === 'warn') return ['i-help-circle', 'Human judgment needed', result.note];
+  return ['i-check-circle', 'Rule-based checks passed', result.note];
 }
 
 async function loadDetail(requestId) {
@@ -316,11 +327,11 @@ function renderDetail(result) {
   $('#conversation-link').href = result.request.url;
   $('#reply-thread-link').href = result.request.url;
   $('#edit-record').href = result.request.record_url;
-  $('#edit-record').textContent = result.request.is_open ? 'Edit in Archive ↗' : 'View record in Archive ↗';
+  $('#edit-record').firstElementChild.textContent = result.request.is_open ? 'Edit in Archive' : 'View record in Archive';
 
   const rec = recommendation(result);
   $('.recommendation').dataset.status = result.status;
-  $('#recommendation-icon').textContent = rec[0];
+  $('#recommendation-icon').replaceChildren(icon(rec[0]));
   $('#recommendation-title').textContent = rec[1];
   $('#recommendation-copy').textContent = rec[2];
   $('#verdict-badge').textContent = result.headline;
@@ -388,6 +399,7 @@ function renderDetail(result) {
   $('#reply-state').textContent = result.reply_eligible ? 'NOT SENT' : 'SENDING DISABLED';
   $('#reply-state').className = result.reply_eligible ? 'not-sent' : 'not-sent disabled';
   $$('#human-checks input').forEach(input => { input.checked = false; });
+  $$('#human-checks .check-note').forEach(note => note.remove());
   resetAI();
   switchDetailTab('review');
   updateReplyControls();
@@ -456,6 +468,9 @@ function renderAI(result) {
   $('#ai-scope-reason').textContent = result.scope.reason || 'No reason supplied.';
   $('#ai-description').textContent = result.description.ok ? 'Adequate' : 'Needs attention';
   $('#ai-description-reason').textContent = result.description.reason || 'No reason supplied.';
+  $('#ai-readme').textContent = result.readme?.ok ? 'Adequate' : 'Needs attention';
+  $('#ai-readme-reason').textContent = result.readme?.reason || 'No reason supplied.';
+  applyAIChecks(result);
   $('#ai-note').textContent = result.moderator_note || 'Complete the human checks before deciding.';
   state.aiReplyLines = Array.isArray(result.reply_lines) ? result.reply_lines : [];
   $('#ai-replies').hidden = !state.aiReplyLines.length;
@@ -464,6 +479,27 @@ function renderAI(result) {
     item.append(node('code', line.key), node('span', line.text));
     return item;
   }));
+}
+
+const checkReasons = {
+  scope: r => r.scope.reason,
+  description: r => r.description.reason,
+  files: r => r.readme?.reason,
+  findings: r => r.checks?.findings ? 'No rule findings or open human checks.' : 'Rule findings or human checks are still open.',
+};
+
+function applyAIChecks(result) {
+  const checks = result.checks || {};
+  $$('#human-checks label').forEach(label => {
+    const input = label.querySelector('input');
+    const ok = checks[input.name] === true;
+    input.checked = ok;
+    let note = label.querySelector('.check-note');
+    if (!note) { note = node('small', '', 'check-note'); label.append(note); }
+    note.className = 'check-note ' + (ok ? 'ok' : 'open');
+    note.textContent = (ok ? 'AI: passed. ' : 'AI: open. ') + (checkReasons[input.name](result) || '');
+  });
+  updateGate();
 }
 
 async function addAIReplies() {
@@ -531,7 +567,7 @@ function updateGate() {
     $('#gate-note').textContent = 'Resolve the findings before approval can be prepared.';
     $('#decision-title').textContent = state.current.findings.length ? 'Changes required' : 'Human review required';
   } else if (!complete) {
-    $('#gate-note').textContent = 'Complete all four checks before preparing approval.';
+    $('#gate-note').textContent = 'The AI review ticks these checks; untick any you disagree with.';
     $('#decision-title').textContent = 'Complete the final checks';
   } else {
     $('#gate-note').textContent = 'Ready for the final read-only safety check.';

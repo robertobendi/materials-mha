@@ -17,11 +17,13 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+
+
 sys.path.insert(0, os.path.join(HERE, "..", "scripts"))
 import deterministic
 import ai_review
 import dashboard as dashboard_data
-from archive_client import Archive, CommentWriter, IDENTIFIER, PRODUCTION
+from archive_client import Archive, CommentWriter, IDENTIFIER, PRODUCTION, README_KEY
 
 ARCHIVE = os.environ.get("MC_ARCHIVE", PRODUCTION).rstrip("/")
 HOST = (os.environ.get("MC_HOST", "127.0.0.1").strip() or "127.0.0.1")
@@ -50,6 +52,22 @@ except ValueError as error:
     print("Ignoring invalid MC_AI_* configuration:", error, file=sys.stderr)
 
 
+def load_dotenv(path):
+    """Copy MC_AI_* entries from the ignored repo-local .env into the process environment."""
+    try:
+        with open(path, encoding="utf-8") as source:
+            for line in source:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, value = line.split("=", 1)
+                key = key.strip()
+                if key.startswith("MC_AI_"):
+                    os.environ.setdefault(key, value.strip())
+    except FileNotFoundError:
+        pass
+
+
 def local_token():
     """Load MC_TOKEN from the process or the ignored repo-local .env file."""
     token = os.environ.get("MC_TOKEN", "")
@@ -72,6 +90,19 @@ def startup_message(url):
     """Return a console banner that is safe in Windows' legacy code pages."""
     mode = "comments only; decisions disabled" if COMMENTS_ENABLED else "read-only"
     return f"Materials Cloud Review -> {url}  ({mode})"
+
+def readme_for(archive, record, context):
+    """Best-effort README text for the AI review; None when absent or unreadable."""
+    keys = [entry.get("key") for entry in entries_of(record)]
+    key = next((k for k in keys if isinstance(k, str) and README_KEY.match(k)), None)
+    if not key:
+        return None
+    try:
+        return archive.readme_text(context["record_id"], key, draft=context.get("draft", True))
+    except (OSError, ValueError) as error:
+        print("README not readable for AI review:", error, file=sys.stderr, flush=True)
+        return None
+
 
 def entries_of(rec):
     ent = rec.get("files", {}).get("entries", {})
@@ -362,16 +393,21 @@ class H(BaseHTTPRequestHandler):
             ai_revision = session["ai_revision"]
             record = review["record"]
             assessment = review["verdict"]
+            context = review["context"]
+            token = session["token"]
             connection = dict(connection) if connection else None
             session["ai_in_progress"] = True
         try:
-            result = ai_review.review(record, assessment, PLAYBOOK, connection=connection)
+            readme = readme_for(Archive(ARCHIVE, token), record, context)
+            result = ai_review.review(record, assessment, PLAYBOOK, connection=connection, readme=readme)
         except TimeoutError:
             return self._send(504, {"error": "AI review timed out. The rule-based findings are still available."})
         except ai_review.AIProviderError as error:
             return self._send(502, {"error": str(error)})
-        except ValueError:
-            return self._send(502, {"error": "AI review returned an invalid result. The rule-based findings are unchanged."})
+        except ValueError as error:
+            print("AI review failed:", error, file=sys.stderr, flush=True)
+            return self._send(502, {"error": "AI review returned an invalid result (" +
+                                    str(error) + "). The rule-based findings are unchanged."})
         finally:
             with LOCK:
                 session["ai_in_progress"] = False
@@ -609,12 +645,17 @@ class H(BaseHTTPRequestHandler):
 
 
 def main():
-    global STARTUP_TOKEN
+    global STARTUP_TOKEN, AI_DEFAULT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--open", action="store_true", help="Open the workspace in your browser.")
     args = parser.parse_args()
     if not HOSTED or ALLOW_ENV_TOKEN:
         STARTUP_TOKEN = local_token()
+        load_dotenv(os.path.join(ROOT, ".env"))
+        try:
+            AI_DEFAULT = ai_review.default_connection(os.environ)
+        except ValueError as error:
+            print("Ignoring invalid MC_AI_* configuration:", error, file=sys.stderr)
     Archive(ARCHIVE)
     try:
         server = ThreadingHTTPServer((HOST, PORT), H)
